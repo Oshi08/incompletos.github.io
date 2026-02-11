@@ -3,33 +3,117 @@
     const navToggle = document.querySelector('.nav-toggle');
     const navLinks = document.querySelector('.nav-links');
     const seriesSection = document.querySelector('.content-block');
+    const chaptersSection = document.querySelector('.chapters-section');
+    const btsSlides = Array.from(document.querySelectorAll('.bts-slide'));
+    const btsPrev = document.querySelector('.bts-nav.prev');
+    const btsNext = document.querySelector('.bts-nav.next');
     const strip = document.querySelector('.chapters-strip');
     const viewport = document.querySelector('.chapters-viewport');
     const seasonSelect = document.querySelector('.season-selector');
     const cards = Array.from(document.querySelectorAll('.chapter-card'));
 
-    const updateSeriesVisibility = () => {
-        if (!seriesSection) return;
-        const rect = seriesSection.getBoundingClientRect();
-        const viewportH = window.innerHeight || document.documentElement.clientHeight;
-        const entersViewport = rect.top < viewportH * 0.78 && rect.bottom > viewportH * 0.22;
-        seriesSection.classList.toggle('is-visible', entersViewport);
-    };
+    const supportsFinePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    if (supportsFinePointer) {
+        const cursor = document.createElement('div');
+        cursor.className = 'app-cursor';
+        document.body.appendChild(cursor);
+        document.body.classList.add('has-custom-cursor');
+
+        const isClickableTarget = (target) => {
+            if (!(target instanceof Element)) return false;
+            return Boolean(target.closest(
+                'a, button, [role=\"button\"], input, select, textarea, label, .chapter-card, .season-selector, .vertice-btn, .nav-toggle'
+            ));
+        };
+
+        const setActiveFromEvent = (eventTarget) => {
+            cursor.classList.toggle('is-active', isClickableTarget(eventTarget));
+        };
+
+        window.addEventListener('mousemove', (event) => {
+            cursor.style.left = `${event.clientX}px`;
+            cursor.style.top = `${event.clientY}px`;
+            if (!cursor.classList.contains('is-visible')) cursor.classList.add('is-visible');
+            setActiveFromEvent(event.target);
+        }, { passive: true });
+
+        document.addEventListener('mouseover', (event) => {
+            setActiveFromEvent(event.target);
+        }, { passive: true });
+
+        document.addEventListener('mousedown', () => {
+            cursor.classList.add('is-press');
+        });
+
+        document.addEventListener('mouseup', () => {
+            cursor.classList.remove('is-press');
+        });
+
+        document.addEventListener('mouseleave', () => {
+            cursor.classList.remove('is-visible', 'is-active', 'is-press');
+        });
+
+        window.addEventListener('blur', () => {
+            cursor.classList.remove('is-visible', 'is-active', 'is-press');
+        });
+    }
 
     if (seriesSection) {
-        window.addEventListener('scroll', updateSeriesVisibility, { passive: true });
-        window.addEventListener('resize', updateSeriesVisibility);
-        updateSeriesVisibility();
+        if ('IntersectionObserver' in window) {
+            const isCenteredInViewport = (entry) => {
+                const viewportH = window.innerHeight || document.documentElement.clientHeight;
+                const viewportCenterY = viewportH / 2;
+                return entry.boundingClientRect.top <= viewportCenterY && entry.boundingClientRect.bottom >= viewportCenterY;
+            };
+
+            const seriesObserver = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (!entry.isIntersecting) return;
+                    if (!isCenteredInViewport(entry)) return;
+                    seriesSection.classList.add('is-visible');
+                    seriesObserver.unobserve(seriesSection);
+                });
+            }, {
+                threshold: [0, 0.25, 0.5, 0.75, 1],
+                rootMargin: '0px 0px 0px 0px'
+            });
+            seriesObserver.observe(seriesSection);
+        } else {
+            seriesSection.classList.add('is-visible');
+        }
+    }
+
+    if (btsSlides.length > 0) {
+        let btsIndex = 0;
+        const setBtsSlide = (index) => {
+            const total = btsSlides.length;
+            btsIndex = (index + total) % total;
+            btsSlides.forEach((slide, i) => {
+                slide.classList.toggle('is-active', i === btsIndex);
+            });
+        };
+
+        if (btsPrev) {
+            btsPrev.addEventListener('click', () => setBtsSlide(btsIndex - 1));
+        }
+        if (btsNext) {
+            btsNext.addEventListener('click', () => setBtsSlide(btsIndex + 1));
+        }
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'ArrowLeft') setBtsSlide(btsIndex - 1);
+            if (event.key === 'ArrowRight') setBtsSlide(btsIndex + 1);
+        });
     }
 
     if (!strip || !viewport || cards.length === 0) return;
 
     const CLOSED_WIDTH = 276;
     const CARD_HEIGHT = 636;
-    const GAP = 35;
+    const GAP = 28;
     const DESC_WIDTH = 393;
     const DEFAULT_RATIO = 16 / 9;
-    const HOVER_DELAY_MS = 800;
+    const HOVER_DELAY_MS = 450;
 
     let activeCard = null;
     const hoverTimers = new Map();
@@ -377,6 +461,33 @@
         strip.classList.add('stagger-in');
     };
 
+    let chaptersVisible = false;
+    if (chaptersSection && 'IntersectionObserver' in window) {
+        const isCenteredInViewport = (entry) => {
+            const viewportH = window.innerHeight || document.documentElement.clientHeight;
+            const viewportCenterY = viewportH / 2;
+            return entry.boundingClientRect.top <= viewportCenterY && entry.boundingClientRect.bottom >= viewportCenterY;
+        };
+
+        const chaptersObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (!entry.isIntersecting || chaptersVisible) return;
+                if (!isCenteredInViewport(entry)) return;
+                chaptersVisible = true;
+                chaptersSection.classList.add('is-visible');
+                runStagger();
+                chaptersObserver.unobserve(chaptersSection);
+            });
+        }, {
+            threshold: [0, 0.25, 0.5, 0.75, 1],
+            rootMargin: '0px 0px 0px 0px'
+        });
+        chaptersObserver.observe(chaptersSection);
+    } else if (chaptersSection) {
+        chaptersVisible = true;
+        chaptersSection.classList.add('is-visible');
+    }
+
     const placeGrid = () => {
         cards.forEach((card) => {
             card.classList.remove('is-active', 'is-media', 'is-previewing');
@@ -495,7 +606,7 @@
         });
 
         placeGrid();
-        runStagger();
+        if (chaptersVisible) runStagger();
     };
 
     cards.forEach((card) => {
@@ -527,8 +638,6 @@
                 activate(card);
                 return;
             }
-
-            enableMedia(card);
         });
 
         if (closeButton) {
@@ -560,7 +669,7 @@
                     activate(card);
                     return;
                 }
-                enableMedia(card);
+                return;
             }
             if (event.key === 'Escape' && card.classList.contains('is-active')) {
                 deactivate();
@@ -595,7 +704,6 @@
         applySeason(seasonSelect.value || '1');
     } else {
         placeGrid();
-        runStagger();
     }
 
     updateMobilePreviewFromViewport();
