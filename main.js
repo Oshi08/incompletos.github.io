@@ -2,10 +2,25 @@
     const topnav = document.querySelector('nav.topnav');
     const navToggle = document.querySelector('.nav-toggle');
     const navLinks = document.querySelector('.nav-links');
+    const seriesSection = document.querySelector('.content-block');
     const strip = document.querySelector('.chapters-strip');
     const viewport = document.querySelector('.chapters-viewport');
     const seasonSelect = document.querySelector('.season-selector');
     const cards = Array.from(document.querySelectorAll('.chapter-card'));
+
+    const updateSeriesVisibility = () => {
+        if (!seriesSection) return;
+        const rect = seriesSection.getBoundingClientRect();
+        const viewportH = window.innerHeight || document.documentElement.clientHeight;
+        const entersViewport = rect.top < viewportH * 0.78 && rect.bottom > viewportH * 0.22;
+        seriesSection.classList.toggle('is-visible', entersViewport);
+    };
+
+    if (seriesSection) {
+        window.addEventListener('scroll', updateSeriesVisibility, { passive: true });
+        window.addEventListener('resize', updateSeriesVisibility);
+        updateSeriesVisibility();
+    }
 
     if (!strip || !viewport || cards.length === 0) return;
 
@@ -52,7 +67,7 @@
                 title: 'Capitulo 01',
                 desc: 'Un episodio intimo sobre la perdida y el peso de lo que no se dice.',
                 poster: 'img/Captura.PNG',
-                src: 'img/7188675_Woman_Young_Women_3840x2160.mp4',
+                src: 'img/videos/7188675_Woman_Young_Women_3840x2160.mp4',
                 type: 'video/mp4'
             },
             {
@@ -60,7 +75,7 @@
                 title: 'Capitulo 02',
                 desc: 'Un estallido de luz que transforma lo cotidiano en celebracion.',
                 poster: 'img/Captura2.PNG',
-                src: 'img/6013655_People_Men_3840x2160.mp4',
+                src: 'img/videos/6013655_People_Men_3840x2160.mp4',
                 type: 'video/mp4'
             },
             {
@@ -68,7 +83,7 @@
                 title: 'Capitulo 03',
                 desc: 'La energia que rompe el silencio y obliga a tomar posicion.',
                 poster: 'img/Captura.PNG',
-                src: 'img/7188675_Woman_Young_Women_3840x2160.mp4',
+                src: 'img/videos/7188675_Woman_Young_Women_3840x2160.mp4',
                 type: 'video/mp4'
             },
             {
@@ -76,7 +91,7 @@
                 title: 'Capitulo 04',
                 desc: 'Un recorrido por la incertidumbre y el impulso de protegerse.',
                 poster: 'img/Captura2.PNG',
-                src: 'img/7188675_Woman_Young_Women_3840x2160.mp4',
+                src: 'img/videos/7188675_Woman_Young_Women_3840x2160.mp4',
                 type: 'video/mp4'
             },
             {
@@ -84,7 +99,7 @@
                 title: 'Capitulo 05',
                 desc: 'El limite entre lo tolerable y lo que necesitamos apartar.',
                 poster: 'img/Captura.PNG',
-                src: 'img/6013655_People_Men_3840x2160.mp4',
+                src: 'img/videos/6013655_People_Men_3840x2160.mp4',
                 type: 'video/mp4'
             }
         ],
@@ -94,7 +109,7 @@
                 title: 'Capitulo 06',
                 desc: 'Una pausa que ordena el ruido y devuelve el control.',
                 poster: 'img/Captura2.PNG',
-                src: 'img/6013655_People_Men_3840x2160.mp4',
+                src: 'img/videos/6013655_People_Men_3840x2160.mp4',
                 type: 'video/mp4'
             },
             {
@@ -102,7 +117,7 @@
                 title: 'Capitulo 07',
                 desc: 'El impulso que acelera el corazon y borra los limites.',
                 poster: 'img/Captura.PNG',
-                src: 'img/7188675_Woman_Young_Women_3840x2160.mp4',
+                src: 'img/videos/7188675_Woman_Young_Women_3840x2160.mp4',
                 type: 'video/mp4'
             },
             {
@@ -110,7 +125,7 @@
                 title: 'Capitulo 08',
                 desc: 'La sombra que aparece cuando el recuerdo se vuelve espejo.',
                 poster: 'img/Captura2.PNG',
-                src: 'img/6013655_People_Men_3840x2160.mp4',
+                src: 'img/videos/6013655_People_Men_3840x2160.mp4',
                 type: 'video/mp4'
             },
             {
@@ -118,7 +133,7 @@
                 title: 'Capitulo 09',
                 desc: 'Una grieta de luz que abre camino en la oscuridad.',
                 poster: 'img/Captura.PNG',
-                src: 'img/7188675_Woman_Young_Women_3840x2160.mp4',
+                src: 'img/videos/7188675_Woman_Young_Women_3840x2160.mp4',
                 type: 'video/mp4'
             },
             {
@@ -126,7 +141,7 @@
                 title: 'Capitulo 10',
                 desc: 'El silencio absoluto donde todo se reinicia.',
                 poster: 'img/Captura2.PNG',
-                src: 'img/6013655_People_Men_3840x2160.mp4',
+                src: 'img/videos/6013655_People_Men_3840x2160.mp4',
                 type: 'video/mp4'
             }
         ]
@@ -585,6 +600,7 @@
 
     updateMobilePreviewFromViewport();
 });
+
 
 
 
