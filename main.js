@@ -25,7 +25,7 @@
                 title: 'Capitulo 01',
                 desc: 'Un episodio intimo sobre la perdida y el peso de lo que no se dice.',
                 poster: 'img/Captura.PNG',
-                src: 'img/Videos/7188675_Woman_Young_Women_3840x2160.mp4',
+                src: 'img/7188675_Woman_Young_Women_3840x2160.mp4',
                 type: 'video/mp4'
             },
             {
@@ -33,7 +33,7 @@
                 title: 'Capitulo 02',
                 desc: 'Un estallido de luz que transforma lo cotidiano en celebracion.',
                 poster: 'img/Captura2.PNG',
-                src: 'img/Videos/6013655_People_Men_3840x2160.mp4',
+                src: 'img/6013655_People_Men_3840x2160.mp4',
                 type: 'video/mp4'
             },
             {
@@ -41,7 +41,7 @@
                 title: 'Capitulo 03',
                 desc: 'La energia que rompe el silencio y obliga a tomar posicion.',
                 poster: 'img/Captura.PNG',
-                src: 'img/Videos/7188675_Woman_Young_Women_3840x2160.mp4',
+                src: 'img/7188675_Woman_Young_Women_3840x2160.mp4',
                 type: 'video/mp4'
             },
             {
@@ -49,7 +49,7 @@
                 title: 'Capitulo 04',
                 desc: 'Un recorrido por la incertidumbre y el impulso de protegerse.',
                 poster: 'img/Captura2.PNG',
-                src: 'img/Videos/7188675_Woman_Young_Women_3840x2160.mp4',
+                src: 'img/7188675_Woman_Young_Women_3840x2160.mp4',
                 type: 'video/mp4'
             },
             {
@@ -57,7 +57,7 @@
                 title: 'Capitulo 05',
                 desc: 'El limite entre lo tolerable y lo que necesitamos apartar.',
                 poster: 'img/Captura.PNG',
-                src: 'img/Videos/6013655_People_Men_3840x2160.mp4',
+                src: 'img/6013655_People_Men_3840x2160.mp4',
                 type: 'video/mp4'
             }
         ],
@@ -67,7 +67,7 @@
                 title: 'Capitulo 06',
                 desc: 'Una pausa que ordena el ruido y devuelve el control.',
                 poster: 'img/Captura2.PNG',
-                src: 'img/Videos/6013655_People_Men_3840x2160.mp4',
+                src: 'img/6013655_People_Men_3840x2160.mp4',
                 type: 'video/mp4'
             },
             {
@@ -75,7 +75,7 @@
                 title: 'Capitulo 07',
                 desc: 'El impulso que acelera el corazon y borra los limites.',
                 poster: 'img/Captura.PNG',
-                src: 'img/Videos/7188675_Woman_Young_Women_3840x2160.mp4',
+                src: 'img/7188675_Woman_Young_Women_3840x2160.mp4',
                 type: 'video/mp4'
             },
             {
@@ -83,7 +83,7 @@
                 title: 'Capitulo 08',
                 desc: 'La sombra que aparece cuando el recuerdo se vuelve espejo.',
                 poster: 'img/Captura2.PNG',
-                src: 'img/Videos/6013655_People_Men_3840x2160.mp4',
+                src: 'img/6013655_People_Men_3840x2160.mp4',
                 type: 'video/mp4'
             },
             {
@@ -91,7 +91,7 @@
                 title: 'Capitulo 09',
                 desc: 'Una grieta de luz que abre camino en la oscuridad.',
                 poster: 'img/Captura.PNG',
-                src: 'img/Videos/7188675_Woman_Young_Women_3840x2160.mp4',
+                src: 'img/7188675_Woman_Young_Women_3840x2160.mp4',
                 type: 'video/mp4'
             },
             {
@@ -99,7 +99,7 @@
                 title: 'Capitulo 10',
                 desc: 'El silencio absoluto donde todo se reinicia.',
                 poster: 'img/Captura2.PNG',
-                src: 'img/Videos/6013655_People_Men_3840x2160.mp4',
+                src: 'img/6013655_People_Men_3840x2160.mp4',
                 type: 'video/mp4'
             }
         ]

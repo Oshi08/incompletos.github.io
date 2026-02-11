@@ -791,6 +791,7 @@ body {
 @media (max-width: 900px) {
     :root {
         --mobile-chapter-height: clamp(380px, 66vh, 540px);
+        --mobile-card-width: clamp(260px, 74vw, 340px);
     }
 
     .chapters-section .content-inner {
@@ -812,10 +813,11 @@ body {
         overflow-x: auto;
         overflow-y: hidden;
         -webkit-overflow-scrolling: touch;
-        scroll-snap-type: x mandatory;
-        scroll-padding-inline: 7vw;
+        scroll-snap-type: x proximity;
+        scroll-padding-inline: calc((100vw - var(--mobile-card-width)) / 2);
         overscroll-behavior-x: contain;
-        touch-action: pan-x;
+        overscroll-behavior-y: auto;
+        touch-action: pan-x pan-y;
         height: var(--mobile-chapter-height);
     }
 
@@ -826,18 +828,18 @@ body {
     .chapters-strip {
         transform: none !important;
         gap: 12px;
-        padding-left: 7vw;
-        padding-right: 7vw;
+        padding-left: calc((100vw - var(--mobile-card-width)) / 2);
+        padding-right: calc((100vw - var(--mobile-card-width)) / 2);
         height: var(--mobile-chapter-height);
     }
 
     .chapter-card {
-        flex: 0 0 74vw;
-        min-width: 260px;
-        max-width: 340px;
+        flex: 0 0 var(--mobile-card-width);
+        min-width: var(--mobile-card-width);
+        max-width: var(--mobile-card-width);
         height: var(--mobile-chapter-height);
         scroll-snap-align: center;
-        scroll-snap-stop: always;
+        scroll-snap-stop: normal;
     }
 
     .chapters-strip .chapter-card .chapter-info {
