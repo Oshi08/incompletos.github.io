@@ -1,4 +1,7 @@
 ﻿document.addEventListener('DOMContentLoaded', () => {
+    const topnav = document.querySelector('nav.topnav');
+    const navToggle = document.querySelector('.nav-toggle');
+    const navLinks = document.querySelector('.nav-links');
     const strip = document.querySelector('.chapters-strip');
     const viewport = document.querySelector('.chapters-viewport');
     const seasonSelect = document.querySelector('.season-selector');
@@ -15,8 +18,32 @@
 
     let activeCard = null;
     const hoverTimers = new Map();
-    const touchPreviewTriggered = new WeakMap();
     let mobileModal = null;
+    let mobileScrollTimer = null;
+
+    const closeNavMenu = () => {
+        if (!topnav) return;
+        topnav.classList.remove('is-open');
+        if (navToggle) navToggle.setAttribute('aria-expanded', 'false');
+    };
+
+    if (topnav && navToggle && navLinks) {
+        navToggle.addEventListener('click', (event) => {
+            event.stopPropagation();
+            const isOpen = topnav.classList.toggle('is-open');
+            navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        });
+
+        navLinks.querySelectorAll('a').forEach((link) => {
+            link.addEventListener('click', () => closeNavMenu());
+        });
+
+        document.addEventListener('click', (event) => {
+            if (window.matchMedia('(max-width: 900px)').matches && !topnav.contains(event.target)) {
+                closeNavMenu();
+            }
+        });
+    }
 
     const seasons = {
         1: [
@@ -239,6 +266,33 @@
         document.body.classList.remove('chapter-modal-open');
     };
 
+    const updateMobilePreviewFromViewport = () => {
+        if (!isMobileLayout() || mobileModal) return;
+
+        const viewportRect = viewport.getBoundingClientRect();
+        const viewportCenter = viewportRect.left + (viewportRect.width / 2);
+        let closestCard = null;
+        let closestDistance = Infinity;
+
+        cards.forEach((card) => {
+            const rect = card.getBoundingClientRect();
+            const cardCenter = rect.left + (rect.width / 2);
+            const distance = Math.abs(cardCenter - viewportCenter);
+            if (distance < closestDistance) {
+                closestDistance = distance;
+                closestCard = card;
+            }
+        });
+
+        cards.forEach((card) => {
+            if (card !== closestCard) stopPreview(card);
+        });
+
+        if (closestCard && !closestCard.classList.contains('is-previewing')) {
+            startPreview(closestCard);
+        }
+    };
+
     const openMobileModal = (sourceCard) => {
         closeMobileModal();
 
@@ -432,7 +486,6 @@
     cards.forEach((card) => {
         const closeButton = card.querySelector('.chapter-close');
         const playButton = card.querySelector('.chapter-play-btn');
-        touchPreviewTriggered.set(card, false);
 
         card.addEventListener('mouseenter', () => {
             if (activeCard) return;
@@ -451,10 +504,6 @@
             if (playButton && playButton.contains(event.target)) return;
 
             if (isMobileLayout()) {
-                if (touchPreviewTriggered.get(card)) {
-                    touchPreviewTriggered.set(card, false);
-                    return;
-                }
                 openMobileModal(card);
                 return;
             }
@@ -503,46 +552,39 @@
             }
         });
 
-        card.addEventListener('touchstart', () => {
-            if (!isMobileLayout()) return;
-            if (mobileModal) return;
-            stopPreview(card);
-            touchPreviewTriggered.set(card, false);
-            const timer = setTimeout(() => {
-                startPreview(card);
-                touchPreviewTriggered.set(card, true);
-            }, HOVER_DELAY_MS);
-            hoverTimers.set(card, timer);
-        }, { passive: true });
-
-        card.addEventListener('touchend', () => {
-            if (!isMobileLayout()) return;
-            if (!card.classList.contains('is-active')) stopPreview(card);
-            setTimeout(() => touchPreviewTriggered.set(card, false), 250);
-        }, { passive: true });
-
-        card.addEventListener('touchcancel', () => {
-            if (!isMobileLayout()) return;
-            if (!card.classList.contains('is-active')) stopPreview(card);
-            touchPreviewTriggered.set(card, false);
-        }, { passive: true });
     });
 
+    viewport.addEventListener('scroll', () => {
+        if (!isMobileLayout()) return;
+        if (mobileScrollTimer) clearTimeout(mobileScrollTimer);
+        mobileScrollTimer = setTimeout(updateMobilePreviewFromViewport, 90);
+    }, { passive: true });
+
     window.addEventListener('resize', () => {
+        if (!window.matchMedia('(max-width: 900px)').matches) {
+            closeNavMenu();
+        }
         if (activeCard) {
             activate(activeCard);
             return;
         }
         placeGrid();
+        updateMobilePreviewFromViewport();
     });
 
     if (seasonSelect) {
         seasonSelect.addEventListener('change', (event) => {
             applySeason(event.target.value);
+            updateMobilePreviewFromViewport();
         });
         applySeason(seasonSelect.value || '1');
     } else {
         placeGrid();
         runStagger();
     }
+
+    updateMobilePreviewFromViewport();
 });
+
+
+
