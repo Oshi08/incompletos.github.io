@@ -111,6 +111,17 @@
         requestAnimationFrame(() => window.scrollTo(0, 0));
     };
 
+    const syncViewportUnits = () => {
+        const viewportHeight = window.visualViewport?.height || window.innerHeight || 0;
+        const viewportWidth = window.visualViewport?.width || window.innerWidth || 0;
+        if (viewportHeight > 0) {
+            document.documentElement.style.setProperty('--app-vh', `${(viewportHeight * 0.01).toFixed(4)}px`);
+        }
+        if (viewportWidth > 0) {
+            document.documentElement.style.setProperty('--app-vw', `${(viewportWidth * 0.01).toFixed(4)}px`);
+        }
+    };
+
     const resetIntroBootState = () => {
         document.body.classList.remove('intro-locked', 'intro-revealing', 'intro-unlocked');
         if (!introOverlay) return;
@@ -124,6 +135,14 @@
 
     resetIntroBootState();
     forceStartFromTop();
+    syncViewportUnits();
+
+    window.addEventListener('resize', syncViewportUnits, { passive: true });
+    window.addEventListener('orientationchange', syncViewportUnits, { passive: true });
+    if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', syncViewportUnits, { passive: true });
+        window.visualViewport.addEventListener('scroll', syncViewportUnits, { passive: true });
+    }
 
     window.addEventListener('pageshow', (event) => {
         if (!event.persisted) return;
@@ -257,7 +276,7 @@
         };
         const onIntroWheel = (event) => {
             if (!isIntroScrollLocked()) return;
-            event.preventDefault();
+            if (event.cancelable) event.preventDefault();
             if (Math.abs(event.deltaY) < 1) return;
             startIntroExit();
         };
@@ -287,7 +306,7 @@
             introParallaxRaf = window.requestAnimationFrame(flushIntroParallax);
         };
         const onIntroTouchMove = (event) => {
-            event.preventDefault();
+            if (event.cancelable) event.preventDefault();
             if (introExitStarted || introFinalized) return;
             if (!event.touches || event.touches.length === 0) return;
             const touch = event.touches[0];
@@ -620,6 +639,8 @@
         let charactersResizeRaf = 0;
         let charactersInViewport = true;
         let hasWindowFocus = document.hasFocus();
+        const CHARACTER_TOUCH_ACTIVATION_PX = 6;
+        const CHARACTER_HORIZONTAL_LOCK_RATIO = 1.1;
         let touchSessionActive = false;
         let touchDragEnabled = false;
         let touchAxisLocked = false;
@@ -654,6 +675,12 @@
             return Number.parseFloat(raw) || 0;
         };
 
+        const readMarqueeDurationSeconds = () => {
+            const raw = window.getComputedStyle(charactersTrack).getPropertyValue('--marquee-duration').trim();
+            if (!raw) return 0;
+            return parseSeconds(raw);
+        };
+
         const readLoopDistance = () => {
             const raw = window.getComputedStyle(charactersTrack).getPropertyValue('--marquee-loop-distance').trim();
             if (!raw) return 0;
@@ -674,7 +701,7 @@
         const endTouchDrag = () => {
             if (!touchDragEnabled) return;
             const loopDistance = readLoopDistance();
-            const durationSeconds = parseSeconds(window.getComputedStyle(charactersTrack).animationDuration);
+            const durationSeconds = readMarqueeDurationSeconds();
             const normalized = loopDistance > 0
                 ? ((((0 - touchCurrentTranslate) % loopDistance) + loopDistance) % loopDistance)
                 : 0;
@@ -772,10 +799,12 @@
             const touch = event.touches[0];
             const dx = touch.clientX - touchStartX;
             const dy = touch.clientY - touchStartY;
+            const absDx = Math.abs(dx);
+            const absDy = Math.abs(dy);
 
-            if (!touchAxisLocked && (Math.abs(dx) + Math.abs(dy)) > 6) {
+            if (!touchAxisLocked && (absDx + absDy) > CHARACTER_TOUCH_ACTIVATION_PX) {
                 touchAxisLocked = true;
-                touchHorizontal = Math.abs(dx) > Math.abs(dy);
+                touchHorizontal = absDx > (absDy * CHARACTER_HORIZONTAL_LOCK_RATIO);
             }
 
             if (!touchAxisLocked || !touchHorizontal) return;
