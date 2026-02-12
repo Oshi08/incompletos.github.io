@@ -4,6 +4,14 @@
     --grid-gap: 35px;
     --section-gap: 28px;
     --page-gutter: 200px;
+    --vertice-dyn-rgb: 18, 18, 18;
+    --vertice-dyn-rgb-soft: 14, 14, 14;
+    --vertice-dyn-rgb-accent: 28, 28, 28;
+    --chapter-closed-width: 276px;
+    --chapter-card-height: 636px;
+    --chapter-gap: 28px;
+    --chapter-desc-width: 393px;
+    --chapter-viewport-height: 668px;
     --phrase-width: 100%;
     --phrase-height: 58vh;
     --motion-ease: cubic-bezier(0.2, 0.9, 0.2, 1);
@@ -180,11 +188,11 @@ body.intro-unlocked nav.topnav {
     transform: translate(-50%, -50%);
     mix-blend-mode: screen;
     z-index: 5;
-    max-width: 90%;
+    max-width: min(94vw, 1100px);
     height: auto;
-    animation: heroTitleBreath 9s ease-in-out infinite;
+    animation: heroTitleBreath 9s ease-in-out infinite, heroTitleSpasm 5.8s steps(1, end) infinite;
     transform-origin: center center;
-    will-change: transform;
+    will-change: transform, filter;
 }
 
 @keyframes heroTitleBreath {
@@ -195,6 +203,45 @@ body.intro-unlocked nav.topnav {
         transform: translate(-50%, -50%) scale(1.045);
     }
     100% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+@keyframes heroTitleSpasm {
+    0%, 100% {
+        filter: blur(0);
+        transform: translate(-50%, -50%) scale(1);
+    }
+    22% {
+        filter: blur(0);
+        transform: translate(calc(-50% - 0.5px), calc(-50% + 0.4px)) scale(1.003);
+    }
+    24% {
+        filter: blur(0.25px);
+        transform: translate(calc(-50% + 0.5px), calc(-50% - 0.4px)) scale(1.004);
+    }
+    26% {
+        filter: blur(0);
+        transform: translate(-50%, -50%) scale(1);
+    }
+    56% {
+        filter: blur(0);
+        transform: translate(calc(-50% + 0.4px), calc(-50% - 0.6px)) scale(1.003);
+    }
+    58% {
+        filter: blur(0.45px);
+        transform: translate(calc(-50% - 0.6px), calc(-50% + 0.6px)) scale(1.006);
+    }
+    60% {
+        filter: blur(0);
+        transform: translate(-50%, -50%) scale(1);
+    }
+    86% {
+        filter: blur(0.6px);
+        transform: translate(calc(-50% + 0.5px), calc(-50% - 0.5px)) scale(1.006);
+    }
+    88% {
+        filter: blur(0);
         transform: translate(-50%, -50%) scale(1);
     }
 }
@@ -300,8 +347,9 @@ body.intro-unlocked main > section {
     z-index: 9999;
     overflow: hidden;
     background:
-        radial-gradient(circle at 50% 42%, rgba(34, 34, 34, 0.4) 0%, rgba(34, 34, 34, 0) 48%),
-        linear-gradient(180deg, #070707 0%, #010101 100%);
+        radial-gradient(130% 100% at 18% 24%, rgba(156, 130, 45, 0.16) 0%, rgba(156, 130, 45, 0) 64%),
+        radial-gradient(102% 82% at 82% 22%, rgba(108, 28, 34, 0.14) 0%, rgba(108, 28, 34, 0) 66%),
+        linear-gradient(180deg, #0d0d0a 0%, #070605 52%, #020202 100%);
     --intro-bg-x: 0px;
     --intro-bg-y: 0px;
     --intro-text-x: 0px;
@@ -318,9 +366,10 @@ body.intro-unlocked main > section {
     position: absolute;
     inset: 0;
     background:
-        radial-gradient(circle at 20% 18%, rgba(230, 230, 230, 0.08) 0%, rgba(230, 230, 230, 0) 36%),
-        radial-gradient(circle at 78% 24%, rgba(170, 170, 170, 0.08) 0%, rgba(170, 170, 170, 0) 34%),
-        linear-gradient(180deg, rgba(8, 8, 8, 0.18), rgba(8, 8, 8, 0.5));
+        radial-gradient(98% 72% at 24% 22%, rgba(200, 170, 70, 0.11) 0%, rgba(200, 170, 70, 0) 66%),
+        radial-gradient(86% 68% at 76% 24%, rgba(128, 30, 38, 0.1) 0%, rgba(128, 30, 38, 0) 64%),
+        radial-gradient(102% 78% at 50% 40%, rgba(22, 40, 28, 0.1) 0%, rgba(22, 40, 28, 0) 70%),
+        linear-gradient(180deg, rgba(10, 10, 8, 0.08), rgba(6, 6, 6, 0.36));
     opacity: 1;
     filter: saturate(0.94) contrast(1.02);
     pointer-events: none;
@@ -335,8 +384,9 @@ body.intro-unlocked main > section {
     position: absolute;
     inset: 0;
     background:
-        radial-gradient(circle at 50% 44%, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0) 54%),
-        radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0) 58%, rgba(0, 0, 0, 0.34) 100%);
+        radial-gradient(circle at 46% 40%, rgba(255, 229, 156, 0.035) 0%, rgba(255, 229, 156, 0) 62%),
+        radial-gradient(circle at 80% 22%, rgba(170, 40, 48, 0.045) 0%, rgba(170, 40, 48, 0) 50%),
+        radial-gradient(circle at 50% 56%, rgba(0, 0, 0, 0) 62%, rgba(0, 0, 0, 0.3) 100%);
     pointer-events: none;
     z-index: 1;
 }
@@ -862,20 +912,20 @@ html {
     width: 100%;
     margin-left: 0;
     margin-right: 0;
-    height: 668px;
+    height: var(--chapter-viewport-height);
     overflow-x: visible;
     overflow-y: visible;
     position: relative;
-    display: flex;
+    
     align-items: center;
 }
 
 .chapters-strip {
     display: flex;
     align-items: stretch;
-    gap: 28px;
+    gap: var(--chapter-gap);
     width: max-content;
-    height: 636px;
+    height: var(--chapter-card-height);
     transform: translate3d(var(--strip-shift, 0px), 0, 0);
     transition: transform var(--motion-base) var(--motion-ease);
     will-change: transform;
@@ -885,8 +935,8 @@ html {
 
 .chapter-card {
     position: relative;
-    flex: 0 0 276px;
-    height: 636px;
+    flex: 0 0 var(--chapter-closed-width);
+    height: var(--chapter-card-height);
     border-radius: 0;
     overflow: hidden;
     cursor: pointer;
@@ -926,7 +976,7 @@ html {
     position: relative;
     flex: 1 1 auto;
     flex-shrink: 0;
-    min-width: 276px;
+    min-width: var(--chapter-closed-width);
     height: 100%;
     overflow: hidden;
     will-change: auto;
@@ -1017,10 +1067,10 @@ html {
 
 .chapter-info {
     position: relative;
-    flex: 0 0 393px;
+    flex: 0 0 var(--chapter-desc-width);
     flex-shrink: 0;
-    min-width: 393px;
-    max-width: 393px;
+    min-width: var(--chapter-desc-width);
+    max-width: var(--chapter-desc-width);
     height: 100%;
     background: #1b1b1b;
     padding: 74px 28px 28px;
@@ -1167,6 +1217,10 @@ html {
 
 .characters-marquee:hover .characters-track {
     animation-play-state: paused;
+}
+
+.characters-track.is-touch-dragging {
+    animation: none !important;
 }
 
 .character-card {
@@ -2660,11 +2714,44 @@ main > section {
 }
 
 .vertice-section {
-    background:
-        radial-gradient(circle at 82% 18%, rgba(190, 190, 190, 0.14) 0%, rgba(190, 190, 190, 0) 42%),
-        linear-gradient(180deg, #111111 0%, #060606 100%);
+    background: #070707;
     border-top: 0;
     border-bottom: 0;
+}
+
+.vertice-section::before {
+    display: block;
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background:
+        linear-gradient(116deg, rgba(var(--vertice-dyn-rgb-accent), 0.28) 0%, rgba(var(--vertice-dyn-rgb), 0.2) 20%, rgba(var(--vertice-dyn-rgb-soft), 0.11) 40%, rgba(var(--vertice-dyn-rgb-soft), 0.045) 56%, rgba(var(--vertice-dyn-rgb-soft), 0) 72%),
+        linear-gradient(138deg, rgba(var(--vertice-dyn-rgb), 0.16) 8%, rgba(var(--vertice-dyn-rgb-soft), 0.08) 36%, rgba(var(--vertice-dyn-rgb-soft), 0.02) 54%, rgba(var(--vertice-dyn-rgb-soft), 0) 68%),
+        radial-gradient(92% 66% at 92% 4%, rgba(255, 255, 255, 0.048) 0%, rgba(255, 255, 255, 0.015) 42%, rgba(255, 255, 255, 0) 76%),
+        linear-gradient(180deg, rgba(7, 7, 7, 0) 0%, rgba(7, 7, 7, 0.34) 72%, #070707 100%);
+    background-repeat: no-repeat, no-repeat, no-repeat;
+    background-size: min(86vw, 1320px) 100%, min(70vw, 1040px) 92%, min(58vw, 860px) 54%, 100% 100%;
+    background-position: right top, right top, right top, center;
+    mix-blend-mode: screen;
+}
+
+.vertice-section::after {
+    display: block;
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background: linear-gradient(180deg, rgba(7, 7, 7, 0) 0%, rgba(7, 7, 7, 0.24) 74%, #070707 100%);
+}
+
+@media (max-width: 900px) {
+    .vertice-section::before {
+        background-size: min(140vw, 980px) 100%, min(118vw, 760px) 90%, min(96vw, 620px) 52%, 100% 100%;
+        background-position: right -28px top, right -22px top, right -14px top, center;
+    }
 }
 
 .cta-contact-section {
@@ -3318,11 +3405,13 @@ textarea:focus-visible {
 
 /* Emphasize Vertice Hero Image */
 @media (min-width: 901px) {
-    .vertice-inner {
+    .vertice-inner,
+    .bts-inner {
         grid-template-columns: minmax(640px, 1.35fr) minmax(320px, 0.9fr);
     }
 
-    .vertice-media {
+    .vertice-media,
+    .bts-slider {
         max-width: 920px;
     }
 }
@@ -3354,6 +3443,16 @@ body.performance-mode .stair-eyebrow {
     opacity: 1 !important;
     filter: none !important;
     transform: none !important;
+}
+
+body.performance-mode .content-title,
+body.performance-mode .chapters-header .season-selector,
+body.performance-mode .chapters-header .chapters-heading {
+    opacity: 1 !important;
+    filter: none !important;
+    transform: none !important;
+    animation: none !important;
+    transition: none !important;
 }
 
 body.performance-mode .chapters-section .chapter-card,
@@ -3576,8 +3675,6 @@ body.performance-mode .content-block.intro-overlay .stair-phrase {
 @media (min-width: 901px) {
     .stair-phrase,
     .characters-inner,
-    .vertice-content,
-    .bts-copy,
     .contact-inner,
     .chapter-info {
         text-align: left;
@@ -3589,11 +3686,28 @@ body.performance-mode .content-block.intro-overlay .stair-phrase {
 
     .vertice-logo,
     .vertice-logo-mobile,
-    .vertice-text,
-    .bts-text,
     .contact-text {
         margin-left: 0;
         margin-right: 0;
+    }
+
+    .vertice-content,
+    .bts-copy {
+        text-align: center;
+        justify-self: center;
+    }
+
+    .vertice-media,
+    .bts-slider {
+        justify-self: center;
+    }
+
+    .vertice-logo,
+    .vertice-logo-mobile,
+    .vertice-text,
+    .bts-text {
+        margin-left: auto;
+        margin-right: auto;
     }
 
     .contact-actions {
@@ -3834,4 +3948,1376 @@ main > section {
 .bts-slider {
     border: 1px solid rgba(255, 255, 255, 0.12);
     box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+}
+
+@media (min-width: 2000px) {
+    :root {
+        --chapter-closed-width: 400px;
+        --chapter-card-height: 740px;
+        --chapter-gap: 32px;
+        --chapter-desc-width: 500px;
+        --chapter-viewport-height: 776px;
+    }
+
+    .chapters-section .content-inner {
+        padding-top: clamp(44px, 3.2vw, 72px);
+        padding-bottom: clamp(44px, 3.2vw, 72px);
+    }
+
+    .chapters-header {
+        margin-bottom: clamp(30px, 2vw, 48px);
+    }
+
+    .season-selector {
+        font-size: 15px;
+        padding: 12px 48px 12px 14px;
+    }
+
+    .chapters-heading {
+        font-size: clamp(46px, 3vw, 76px);
+    }
+
+    .chapter-label {
+        font-size: 12px;
+        letter-spacing: 0.16em;
+    }
+
+    .chapter-title {
+        font-size: clamp(34px, 2vw, 44px);
+    }
+
+    .chapter-desc {
+        font-size: 18px;
+        line-height: 1.65;
+    }
+}
+
+/* Chapters Responsive Final */
+@media (min-width: 901px) {
+    :root {
+        --chapter-closed-width: clamp(250px, 20vw, 420px);
+        --chapter-card-height: clamp(480px, 60vh, 700px);
+        --chapter-gap: clamp(14px, 1.3vw, 26px);
+        --chapter-desc-width: clamp(280px, 22vw, 460px);
+        --chapter-viewport-height: clamp(520px, 66vh, 740px);
+    }
+
+    .chapters-section .content-inner {
+        width: 100%;
+        max-width: none;
+        padding-left: clamp(22px, 5vw, 96px);
+        padding-right: clamp(22px, 5vw, 96px);
+    }
+
+    .chapters-viewport {
+        height: var(--chapter-viewport-height);
+        width: 100%;
+    }
+
+    .chapters-strip {
+        gap: var(--chapter-gap);
+        height: var(--chapter-card-height);
+    }
+
+    .chapter-card {
+        flex: 0 0 var(--chapter-closed-width);
+        height: var(--chapter-card-height);
+    }
+
+    .chapter-card.is-active {
+        flex-basis: min(calc(100vw - clamp(54px, 12vw, 220px)), var(--expanded-width, 1400px));
+    }
+
+    .chapter-info {
+        flex: 0 0 var(--chapter-desc-width);
+        min-width: var(--chapter-desc-width);
+        max-width: var(--chapter-desc-width);
+        padding: clamp(48px, 6vh, 84px) clamp(20px, 2vw, 34px) clamp(20px, 2vw, 32px);
+    }
+
+    .chapter-title {
+        font-size: clamp(24px, 1.6vw, 34px);
+    }
+
+    .chapter-desc {
+        font-size: clamp(13px, 0.92vw, 16px);
+        line-height: 1.52;
+    }
+}
+
+@media (min-width: 1600px) {
+    :root {
+        --chapter-closed-width: clamp(320px, 19vw, 520px);
+        --chapter-card-height: clamp(640px, 72vh, 860px);
+        --chapter-desc-width: clamp(360px, 24vw, 560px);
+        --chapter-viewport-height: clamp(690px, 78vh, 900px);
+    }
+}
+
+@media (max-width: 900px) {
+    :root {
+        --mobile-card-width: clamp(220px, 82vw, 360px);
+        --mobile-chapter-height: clamp(360px, 62vh, 560px);
+    }
+
+    .chapters-section .content-inner {
+        padding-left: clamp(12px, 4vw, 22px) !important;
+        padding-right: clamp(12px, 4vw, 22px) !important;
+    }
+
+    .chapters-viewport {
+        height: calc(var(--mobile-chapter-height) + 16px);
+        scroll-padding-inline: max(14px, calc((100vw - var(--mobile-card-width)) / 2));
+    }
+
+    .chapters-strip {
+        gap: 10px;
+        padding-left: max(14px, calc((100vw - var(--mobile-card-width)) / 2));
+        padding-right: max(14px, calc((100vw - var(--mobile-card-width)) / 2));
+        height: var(--mobile-chapter-height);
+    }
+
+    .chapter-card {
+        flex: 0 0 var(--mobile-card-width);
+        min-width: var(--mobile-card-width);
+        max-width: var(--mobile-card-width);
+        height: var(--mobile-chapter-height);
+    }
+}
+
+@media (max-width: 560px) {
+    :root {
+        --mobile-card-width: clamp(206px, 86vw, 320px);
+        --mobile-chapter-height: clamp(330px, 58vh, 500px);
+    }
+}
+
+/* Global Content Responsive Final */
+@media (min-width: 901px) {
+    :root {
+        --page-gutter: clamp(20px, 4vw, 80px);
+    }
+
+    main > section:not(.intro-overlay) > .content-inner {
+        width: 100%;
+        max-width: none;
+        padding-left: var(--page-gutter) !important;
+        padding-right: var(--page-gutter) !important;
+    }
+
+    .vertice-inner,
+    .bts-inner {
+        width: 100%;
+        max-width: none;
+        grid-template-columns: minmax(0, 1.18fr) minmax(0, 1fr);
+        gap: clamp(22px, 3.3vw, 64px);
+        align-items: center;
+    }
+
+    .vertice-media,
+    .bts-slider {
+        width: 100%;
+        max-width: none;
+        min-height: clamp(300px, 44vh, 560px);
+    }
+
+    .vertice-content,
+    .bts-copy {
+        max-width: clamp(380px, 30vw, 640px);
+    }
+
+    .character-card {
+        width: clamp(260px, 31vw, 560px);
+        min-width: clamp(260px, 31vw, 560px);
+    }
+
+    .chapters-heading,
+    .characters-title,
+    .vertice-title,
+    .bts-title,
+    .contact-title {
+        font-size: clamp(30px, 3.1vw, 58px);
+        line-height: 0.96;
+    }
+
+    .vertice-tagline {
+        font-size: clamp(20px, 2.2vw, 40px);
+    }
+
+    .vertice-text,
+    .bts-text,
+    .contact-text,
+    .chapter-desc {
+        font-size: clamp(13px, 0.92vw, 16px);
+        line-height: 1.5;
+        max-width: 64ch;
+    }
+
+    .contact-inner {
+        max-width: none;
+    }
+}
+
+@media (max-width: 900px) {
+    :root {
+        --page-gutter: clamp(14px, 4vw, 22px);
+    }
+
+    main > section:not(.intro-overlay) > .content-inner {
+        padding-left: var(--page-gutter) !important;
+        padding-right: var(--page-gutter) !important;
+    }
+
+    .vertice-inner,
+    .bts-inner {
+        grid-template-columns: 1fr !important;
+        gap: clamp(14px, 4.4vw, 28px) !important;
+    }
+
+    .vertice-media,
+    .bts-slider {
+        min-height: 0;
+    }
+
+    .characters-title,
+    .bts-title,
+    .contact-title,
+    .vertice-title,
+    .chapters-heading {
+        font-size: clamp(26px, 8.4vw, 46px) !important;
+        line-height: 0.98;
+    }
+
+    .vertice-tagline {
+        font-size: clamp(20px, 6vw, 34px) !important;
+    }
+
+    .vertice-text,
+    .bts-text,
+    .contact-text,
+    .chapter-desc {
+        font-size: clamp(13px, 3.4vw, 16px) !important;
+        line-height: 1.45;
+        max-width: 100%;
+    }
+
+    .character-card {
+        width: clamp(210px, 74vw, 340px);
+        min-width: clamp(210px, 74vw, 340px);
+    }
+}
+
+@media (min-width: 901px) and (max-width: 1366px) {
+    :root {
+        --chapter-card-height: clamp(430px, 54vh, 580px);
+        --chapter-viewport-height: clamp(470px, 60vh, 620px);
+        --chapter-desc-width: clamp(250px, 20vw, 340px);
+    }
+
+    .chapters-heading,
+    .characters-title,
+    .vertice-title,
+    .bts-title,
+    .contact-title {
+        font-size: clamp(26px, 2.6vw, 42px) !important;
+    }
+
+    .vertice-tagline {
+        font-size: clamp(18px, 1.9vw, 30px) !important;
+    }
+
+    .nav-center .logo img {
+        height: clamp(18px, 1.05vw, 22px);
+    }
+}
+
+/* Nav Responsive Final */
+nav.topnav {
+    min-height: clamp(54px, 4.2vw, 70px);
+    padding-left: clamp(12px, 3.2vw, 48px);
+    padding-right: clamp(12px, 3.2vw, 48px);
+}
+
+.nav-center .logo img {
+    height: clamp(20px, 1.15vw, 26px);
+}
+
+.nav-links {
+    gap: clamp(8px, 1.4vw, 20px);
+}
+
+.nav-links a {
+    margin-left: 0;
+    padding: 6px 8px;
+    font-size: clamp(10px, 0.6vw, 12px);
+    letter-spacing: 0.12em;
+}
+
+@media (max-width: 900px) {
+    :root {
+        --mobile-nav-height: clamp(54px, 10vw, 64px);
+    }
+
+    nav.topnav {
+        min-height: var(--mobile-nav-height);
+        padding: calc(8px + env(safe-area-inset-top)) clamp(12px, 4vw, 18px) 8px clamp(12px, 4vw, 18px);
+        justify-content: space-between;
+    }
+
+    .nav-center {
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .nav-center .logo img {
+        height: clamp(18px, 4.8vw, 24px);
+    }
+
+    .nav-toggle {
+        width: 36px;
+        height: 36px;
+        border: 0;
+        background: transparent;
+        border-radius: 0;
+    }
+
+    .nav-toggle span {
+        width: 18px;
+    }
+
+    .nav-links {
+        position: absolute;
+        top: calc(100% + 8px);
+        right: clamp(10px, 3.4vw, 16px);
+        left: auto;
+        width: min(92vw, 340px);
+        min-width: 0;
+        padding: 8px 0;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        background: rgba(0, 0, 0, 0.78);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        box-shadow: 0 14px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .nav-links a {
+        width: 100%;
+        padding: 11px 14px;
+        font-size: 11px !important;
+        letter-spacing: 0.14em;
+        text-align: left;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.09) !important;
+    }
+}
+
+/* Vertice Logo + Eyebrow Alignment */
+.vertice-eyebrow {
+    width: 100%;
+    text-align: center !important;
+}
+
+.vertice-logo {
+    width: clamp(240px, 16vw, 360px) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+.vertice-text {
+    text-align: center !important;
+}
+
+.vertice-content {
+    padding-top: clamp(20px, 2.2vw, 34px) !important;
+}
+
+/* Global Button System */
+:root {
+    --btn-height: clamp(38px, 2.8vw, 50px);
+    --btn-padding-x: clamp(14px, 1.6vw, 24px);
+    --btn-font-size: clamp(11px, 0.78vw, 13px);
+    --btn-radius: 10px;
+}
+
+.vertice-btn,
+.contact-btn,
+.cta-contact-btn,
+.floating-contact-btn,
+.chapter-play-btn,
+.bts-nav,
+.btn {
+    min-height: var(--btn-height) !important;
+    padding: 0 var(--btn-padding-x) !important;
+    border-radius: var(--btn-radius) !important;
+    border: 1px solid rgba(255, 255, 255, 0.36) !important;
+    background: rgba(0, 0, 0, 0.32) !important;
+    color: #ffffff !important;
+    font-size: var(--btn-font-size) !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.12em !important;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.25s ease, border-color 0.25s ease, transform 0.22s ease, color 0.22s ease !important;
+}
+
+.vertice-btn:hover,
+.contact-btn:hover,
+.cta-contact-btn:hover,
+.floating-contact-btn:hover,
+.chapter-play-btn:hover,
+.bts-nav:hover,
+.btn:hover {
+    background: rgba(255, 255, 255, 0.14) !important;
+    border-color: rgba(255, 255, 255, 0.86) !important;
+    transform: translateY(-1px);
+}
+
+.bts-nav {
+    width: var(--btn-height) !important;
+    min-width: var(--btn-height) !important;
+    padding: 0 !important;
+    font-size: clamp(18px, 1.5vw, 24px) !important;
+    line-height: 1;
+}
+
+.bts-nav:hover,
+.bts-nav:focus-visible,
+.bts-nav:active {
+    transform: translateY(calc(-50% - 1px)) !important;
+}
+
+.chapter-play-btn {
+    min-width: clamp(120px, 10vw, 180px);
+}
+
+.floating-contact-btn {
+    min-width: clamp(136px, 11vw, 190px);
+}
+
+@media (max-width: 900px) {
+    :root {
+        --btn-height: 40px;
+        --btn-padding-x: 14px;
+        --btn-font-size: 11px;
+        --btn-radius: 9px;
+    }
+}
+
+/* Hero Footer Vertical Position (Desktop/2K+) */
+@media (min-width: 901px) {
+    .hero-footer-container {
+        bottom: clamp(150px, 14vh, 280px) !important;
+    }
+}
+
+@media (min-width: 2000px) {
+    .hero-footer-container {
+        bottom: clamp(190px, 16vh, 360px) !important;
+    }
+
+    .hero-footer {
+        max-width: clamp(200px, 10vw, 280px);
+    }
+}
+
+/* Intro Curtain Phrase Alignment */
+.content-block.intro-overlay .stair-phrase {
+    width: min(100%, 1600px) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: clamp(18px, 5vw, 120px) !important;
+    padding-right: clamp(18px, 5vw, 120px) !important;
+    text-align: center !important;
+}
+
+.content-block.intro-overlay .stair-eyebrow,
+.content-block.intro-overlay .stair-line {
+    text-align: center !important;
+    justify-content: center !important;
+}
+
+@media (max-width: 900px) {
+    .content-block.intro-overlay .stair-phrase {
+        width: min(100%, 96vw) !important;
+        padding-left: clamp(14px, 4.8vw, 26px) !important;
+        padding-right: clamp(14px, 4.8vw, 26px) !important;
+    }
+}
+
+/* Floating Performance Button Size */
+.floating-performance-btn {
+    min-height: clamp(34px, 2.2vw, 42px) !important;
+    min-width: clamp(112px, 8vw, 146px) !important;
+    padding: 0 clamp(10px, 1vw, 14px) !important;
+    font-size: clamp(10px, 0.64vw, 11px) !important;
+}
+
+@media (min-width: 1600px) {
+    .hero-titulo {
+        max-width: min(92vw, 1360px) !important;
+    }
+}
+
+@media (min-width: 2000px) {
+    .hero-titulo {
+        max-width: min(92vw, 1680px) !important;
+    }
+}
+
+/* Flat Buttons */
+button,
+.btn,
+.vertice-btn,
+.contact-btn,
+.cta-contact-btn,
+.floating-contact-btn,
+.chapter-play-btn,
+.bts-nav,
+.nav-toggle {
+    border-radius: 0 !important;
+}
+
+/* Responsive UX Hardening */
+@media (max-width: 1200px) {
+    :root {
+        --page-gutter: clamp(16px, 3.4vw, 34px);
+        --section-rhythm: clamp(34px, 6vw, 72px);
+    }
+
+    main > section:not(.intro-overlay) > .content-inner {
+        padding-left: var(--page-gutter) !important;
+        padding-right: var(--page-gutter) !important;
+    }
+
+    .vertice-inner,
+    .bts-inner {
+        grid-template-columns: 1fr !important;
+        gap: clamp(14px, 3.6vw, 28px) !important;
+    }
+
+    .vertice-content,
+    .bts-copy,
+    .contact-inner {
+        max-width: 100% !important;
+    }
+
+    .vertice-media,
+    .bts-slider {
+        width: min(100%, 900px) !important;
+        max-width: min(100%, 900px) !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    .hero-titulo {
+        max-width: min(90vw, 860px) !important;
+    }
+
+    .hero-footer-container {
+        bottom: clamp(92px, 11vh, 170px) !important;
+    }
+}
+
+@media (max-width: 900px) {
+    html,
+    body {
+        overflow-x: hidden !important;
+    }
+
+    main {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    nav.topnav {
+        min-height: clamp(52px, 10vw, 62px) !important;
+        padding-left: clamp(10px, 3.8vw, 16px) !important;
+        padding-right: clamp(10px, 3.8vw, 16px) !important;
+    }
+
+    .nav-links {
+        width: min(90vw, 320px) !important;
+        right: clamp(8px, 3vw, 14px) !important;
+    }
+
+    .nav-links a {
+        padding: 10px 12px !important;
+        font-size: 11px !important;
+    }
+
+    .hero-titulo {
+        max-width: min(90vw, 600px) !important;
+    }
+
+    .hero-footer-container {
+        top: calc((44% + (var(--mobile-nav-height) / 2)) + min(20vw, 110px)) !important;
+        bottom: auto !important;
+    }
+
+    .vertice-media,
+    .bts-slider {
+        width: min(100%, 84vw) !important;
+        max-width: 680px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    .vertice-content {
+        padding-top: clamp(26px, 6vw, 44px) !important;
+    }
+
+    .vertice-logo {
+        width: clamp(170px, 32vw, 230px) !important;
+    }
+
+    .content-block.intro-overlay .stair-phrase {
+        min-height: 100dvh !important;
+        width: min(100%, 96vw) !important;
+        padding-left: clamp(12px, 4vw, 22px) !important;
+        padding-right: clamp(12px, 4vw, 22px) !important;
+    }
+
+    .stair-word {
+        font-size: clamp(24px, 8.4vw, 48px) !important;
+        line-height: 1 !important;
+    }
+
+    .chapters-section .content-inner {
+        padding-left: clamp(10px, 4vw, 18px) !important;
+        padding-right: clamp(10px, 4vw, 18px) !important;
+    }
+
+    .chapters-header {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 8px !important;
+        margin-bottom: 12px !important;
+    }
+
+    .chapters-heading {
+        order: 1;
+        text-align: center !important;
+        white-space: normal !important;
+    }
+
+    .chapters-header .season-selector {
+        order: 2;
+        margin: 0 auto !important;
+    }
+
+    .characters-track {
+        gap: 10px !important;
+    }
+
+    .character-card {
+        width: clamp(198px, 76vw, 320px) !important;
+        min-width: clamp(198px, 76vw, 320px) !important;
+    }
+
+    .floating-contact-btn {
+        right: 12px !important;
+        bottom: 12px !important;
+    }
+
+    .vertice-content,
+    .bts-copy,
+    .contact-inner,
+    .chapter-info,
+    .characters-inner,
+    .stair-phrase,
+    .chapters-section .content-inner {
+        text-align: center !important;
+    }
+
+    .contact-actions {
+        justify-content: center !important;
+    }
+}
+
+@media (max-width: 560px) {
+    :root {
+        --page-gutter: 12px;
+        --btn-height: 36px;
+        --btn-padding-x: 12px;
+        --btn-font-size: 10px;
+    }
+
+    .hero-titulo {
+        max-width: min(92vw, 460px) !important;
+    }
+
+    .hero-footer {
+        max-width: min(150px, 48vw) !important;
+    }
+
+    .chapters-viewport {
+        height: calc(var(--mobile-chapter-height) + 12px) !important;
+    }
+
+    .vertice-media,
+    .bts-slider {
+        width: min(100%, 92vw) !important;
+        max-width: 520px !important;
+    }
+
+    .vertice-content {
+        padding-top: clamp(22px, 7vw, 34px) !important;
+    }
+
+    .vertice-logo {
+        width: clamp(140px, 42vw, 190px) !important;
+    }
+}
+
+@media (min-width: 1600px) {
+    .vertice-logo {
+        width: clamp(300px, 18vw, 460px) !important;
+    }
+}
+
+/* Mobile chapters: no vertical scrollbar */
+@media (max-width: 900px) {
+    .chapters-viewport {
+        overflow-y: hidden !important;
+        overflow-x: auto !important;
+        overscroll-behavior-y: none !important;
+        scroll-behavior: smooth;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        cursor: grab;
+    }
+
+    .chapters-viewport::-webkit-scrollbar {
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+    }
+
+    .chapters-viewport.is-mouse-dragging {
+        cursor: grabbing;
+        user-select: none;
+    }
+}
+
+/* Mobile: season button below chapters title */
+@media (max-width: 900px) {
+    .chapters-section .content-inner {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 10px !important;
+    }
+
+    .chapters-header {
+        display: contents !important;
+    }
+
+    .chapters-header .chapters-heading {
+        order: 1 !important;
+        text-align: center !important;
+        margin-bottom: 14px !important;
+    }
+
+    .chapters-viewport {
+        order: 2 !important;
+        margin-bottom: 8px !important;
+    }
+
+    .chapters-header .season-selector {
+        order: 3 !important;
+        margin: 16px auto 6px !important;
+    }
+}
+
+/* Responsive Balance Final */
+html,
+body {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+}
+
+body > * {
+    max-width: 100%;
+}
+
+main,
+main > section,
+main > section > .content-inner {
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+@media (max-width: 1200px) {
+    :root {
+        --section-pad-tablet: 44px;
+    }
+
+    main > section.vertice-section > .content-inner.vertice-inner,
+    main > section.chapters-section > .content-inner,
+    main > section.characters-section > .content-inner.characters-inner,
+    main > section.bts-section > .content-inner.bts-inner,
+    main > section.contact-section > .content-inner.contact-inner {
+        padding-top: var(--section-pad-tablet) !important;
+        padding-bottom: var(--section-pad-tablet) !important;
+    }
+
+    .vertice-section .content-inner.vertice-inner {
+        padding-top: clamp(64px, 8vw, 106px) !important;
+    }
+}
+
+@media (max-width: 900px) {
+    :root {
+        --section-pad-mobile: 32px;
+    }
+
+    main > section.vertice-section > .content-inner.vertice-inner,
+    main > section.chapters-section > .content-inner,
+    main > section.characters-section > .content-inner.characters-inner,
+    main > section.bts-section > .content-inner.bts-inner,
+    main > section.contact-section > .content-inner.contact-inner {
+        padding-top: var(--section-pad-mobile) !important;
+        padding-bottom: var(--section-pad-mobile) !important;
+    }
+
+    .vertice-section .content-inner.vertice-inner {
+        padding-top: clamp(74px, 11vw, 132px) !important;
+    }
+
+    .vertice-content {
+        padding-top: clamp(34px, 8vw, 62px) !important;
+    }
+}
+
+@media (max-width: 560px) {
+    .vertice-section .content-inner.vertice-inner {
+        padding-top: clamp(68px, 12vw, 114px) !important;
+    }
+
+    .vertice-content {
+        padding-top: clamp(28px, 9vw, 52px) !important;
+    }
+}
+
+/* Wide Buttons + Global Centered Text */
+.vertice-btn,
+.contact-btn,
+.cta-contact-btn,
+.floating-contact-btn,
+.chapter-play-btn,
+.btn {
+    min-width: clamp(210px, 18vw, 320px) !important;
+    padding-left: clamp(30px, 2.8vw, 44px) !important;
+    padding-right: clamp(30px, 2.8vw, 44px) !important;
+    margin-left: clamp(15px, 1.4vw, 20px) !important;
+    margin-right: clamp(15px, 1.4vw, 20px) !important;
+}
+
+.bts-nav {
+    min-width: clamp(44px, 4vw, 56px) !important;
+}
+
+h1, h2, h3, h4, h5, h6,
+p,
+.vertice-content,
+.bts-copy,
+.contact-inner,
+.characters-inner,
+.chapters-section .content-inner,
+.chapter-info,
+.chapter-title,
+.chapter-desc,
+.chapters-heading,
+.stair-phrase,
+.stair-line {
+    text-align: center !important;
+}
+
+.contact-actions,
+.nav-links {
+    justify-content: center !important;
+}
+
+/* Responsive side margins */
+@media (max-width: 1200px) {
+    main > section > .content-inner {
+        padding-left: clamp(18px, 4vw, 32px) !important;
+        padding-right: clamp(18px, 4vw, 32px) !important;
+    }
+}
+
+@media (max-width: 900px) {
+    main > section > .content-inner,
+    .chapters-section .content-inner,
+    .content-block.intro-overlay .stair-phrase {
+        padding-left: clamp(14px, 5vw, 24px) !important;
+        padding-right: clamp(14px, 5vw, 24px) !important;
+    }
+}
+
+@media (max-width: 560px) {
+    main > section > .content-inner,
+    .chapters-section .content-inner,
+    .content-block.intro-overlay .stair-phrase {
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+    }
+}
+
+@media (max-width: 900px) {
+    .vertice-btn,
+    .contact-btn,
+    .cta-contact-btn,
+    .floating-contact-btn,
+    .chapter-play-btn,
+    .btn {
+        margin-left: 10px !important;
+        margin-right: 10px !important;
+    }
+}
+
+.floating-performance-btn {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+}
+
+/* Uniform CTA width (match HABLEMOS) */
+:root {
+    --cta-uniform-width: clamp(210px, 18vw, 320px);
+}
+
+.vertice-btn,
+.contact-btn,
+.cta-contact-btn,
+.floating-contact-btn,
+.chapter-play-btn,
+.btn {
+    width: var(--cta-uniform-width) !important;
+    min-width: var(--cta-uniform-width) !important;
+    max-width: var(--cta-uniform-width) !important;
+    text-align: center !important;
+}
+
+@media (max-width: 900px) {
+    .floating-performance-btn {
+        width: var(--cta-uniform-width) !important;
+        min-width: var(--cta-uniform-width) !important;
+        max-width: var(--cta-uniform-width) !important;
+        text-align: center !important;
+    }
+
+    .chapters-header .season-selector {
+        width: var(--cta-uniform-width) !important;
+        min-width: var(--cta-uniform-width) !important;
+        max-width: var(--cta-uniform-width) !important;
+    }
+}
+
+/* Hide scrollbar globally (keep scroll functionality) */
+html,
+body {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+    width: 0 !important;
+    height: 0 !important;
+    display: none !important;
+}
+
+/* Final fix: center CTA/contact block */
+.contact-section {
+    display: grid !important;
+    align-items: center !important;
+}
+
+.contact-inner {
+    width: min(100%, 980px) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+}
+
+.contact-title,
+.contact-text,
+.contact-actions {
+    width: 100% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    text-align: center !important;
+}
+
+.contact-text {
+    max-width: min(62ch, 100%) !important;
+    margin-bottom: 22px !important;
+}
+
+.contact-actions {
+    justify-content: center !important;
+}
+
+@media (min-width: 901px) {
+    .vertice-btn {
+        padding-left: clamp(44px, 4.6vw, 72px) !important;
+        padding-right: clamp(44px, 4.6vw, 72px) !important;
+        min-width: clamp(260px, 24vw, 360px) !important;
+    }
+}
+
+/* Extra bottom breathing room for Making Of */
+main > section.bts-section > .content-inner.bts-inner {
+    padding-bottom: clamp(72px, 8vw, 140px) !important;
+}
+
+@media (max-width: 900px) {
+    main > section.bts-section > .content-inner.bts-inner {
+        padding-bottom: clamp(44px, 11vw, 72px) !important;
+    }
+}
+
+/* Stable Section Padding (prevents jumping gaps on resize) */
+:root {
+    --section-pad-desktop: 52px;
+    --section-pad-tablet: 40px;
+    --section-pad-mobile: 28px;
+}
+
+main > section.vertice-section > .content-inner.vertice-inner,
+main > section.chapters-section > .content-inner,
+main > section.characters-section > .content-inner.characters-inner,
+main > section.bts-section > .content-inner.bts-inner,
+main > section.contact-section > .content-inner.contact-inner {
+    padding-top: var(--section-pad-desktop) !important;
+    padding-bottom: var(--section-pad-desktop) !important;
+}
+
+main > section.characters-section,
+main > section.characters-section > .content-inner.characters-inner {
+    min-height: auto !important;
+}
+
+@media (max-width: 1200px) {
+    main > section.vertice-section > .content-inner.vertice-inner,
+    main > section.chapters-section > .content-inner,
+    main > section.characters-section > .content-inner.characters-inner,
+    main > section.bts-section > .content-inner.bts-inner,
+    main > section.contact-section > .content-inner.contact-inner {
+        padding-top: var(--section-pad-tablet) !important;
+        padding-bottom: var(--section-pad-tablet) !important;
+    }
+}
+
+@media (max-width: 900px) {
+    main > section.vertice-section > .content-inner.vertice-inner,
+    main > section.chapters-section > .content-inner,
+    main > section.characters-section > .content-inner.characters-inner,
+    main > section.bts-section > .content-inner.bts-inner,
+    main > section.contact-section > .content-inner.contact-inner {
+        padding-top: var(--section-pad-mobile) !important;
+        padding-bottom: var(--section-pad-mobile) !important;
+    }
+}
+
+/* Final override: Making Of bottom spacing */
+main > section.bts-section {
+    padding-bottom: 0 !important;
+}
+
+main > section.bts-section > .content-inner.bts-inner {
+    padding-top: clamp(38px, 3.8vw, 66px) !important;
+    padding-bottom: clamp(112px, 10.6vw, 198px) !important;
+}
+
+@media (max-width: 1200px) {
+    main > section.bts-section > .content-inner.bts-inner {
+        padding-top: clamp(30px, 4.6vw, 52px) !important;
+        padding-bottom: clamp(90px, 11.6vw, 156px) !important;
+    }
+}
+
+@media (max-width: 900px) {
+    main > section.bts-section > .content-inner.bts-inner {
+        padding-top: clamp(24px, 5.8vw, 42px) !important;
+        padding-bottom: clamp(72px, 14.8vw, 116px) !important;
+    }
+}
+
+/* Final override: Characters breathing room */
+main > section.characters-section > .content-inner.characters-inner {
+    padding-top: clamp(84px, 7vw, 140px) !important;
+    padding-bottom: clamp(84px, 7vw, 140px) !important;
+}
+
+@media (max-width: 1200px) {
+    main > section.characters-section > .content-inner.characters-inner {
+        padding-top: clamp(66px, 8vw, 106px) !important;
+        padding-bottom: clamp(66px, 8vw, 106px) !important;
+    }
+}
+
+@media (max-width: 900px) {
+    main > section.characters-section > .content-inner.characters-inner {
+        padding-top: clamp(52px, 11vw, 84px) !important;
+        padding-bottom: clamp(52px, 11vw, 84px) !important;
+    }
+}
+
+/* Desktop reset: keep normal button sizing on web */
+@media (min-width: 901px) {
+    .vertice-btn,
+    .contact-btn,
+    .cta-contact-btn,
+    .floating-contact-btn,
+    .chapter-play-btn,
+    .btn {
+        width: auto !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding-left: var(--btn-padding-x) !important;
+        padding-right: var(--btn-padding-x) !important;
+    }
+}
+
+/* CTA alignment + stronger button visibility */
+.cta-contact-inner,
+.cta-contact-copy,
+.contact-inner,
+.contact-title,
+.contact-text {
+    text-align: center !important;
+}
+
+.contact-actions {
+    justify-content: center !important;
+}
+
+.vertice-btn,
+.contact-btn,
+.cta-contact-btn,
+.floating-contact-btn,
+.chapter-play-btn,
+.btn {
+    background: rgba(0, 0, 0, 0.32) !important;
+    border-color: rgba(255, 255, 255, 0.36) !important;
+    color: #ffffff !important;
+    box-shadow: none !important;
+}
+
+.vertice-btn:hover,
+.contact-btn:hover,
+.cta-contact-btn:hover,
+.floating-contact-btn:hover,
+.chapter-play-btn:hover,
+.btn:hover {
+    background: rgba(255, 255, 255, 0.14) !important;
+    border-color: rgba(255, 255, 255, 0.86) !important;
+}
+
+/* Contact/CTA image full screen width */
+.contact-section::before,
+.cta-contact-section::before {
+    background-size: cover !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+}
+
+/* Final force: HABLEMOS bigger on web */
+@media (min-width: 901px) {
+    main > section.vertice-section .vertice-btn {
+        padding-left: 24px !important;
+        padding-right: 24px !important;
+        min-width: 200px !important;
+    }
+}
+
+/* Vertice: top spacing equal to side gutter */
+main > section.vertice-section > .content-inner.vertice-inner {
+    padding-top: var(--page-gutter) !important;
+}
+
+@media (max-width: 900px) {
+    main > section.vertice-section > .content-inner.vertice-inner {
+        padding-top: var(--page-gutter) !important;
+        padding-left: var(--page-gutter) !important;
+        padding-right: var(--page-gutter) !important;
+    }
+
+    main > section.vertice-section .vertice-media {
+        width: 100% !important;
+        max-width: none !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
+    main > section.vertice-section .vertice-btn {
+        width: min(86vw, 340px) !important;
+        min-width: min(86vw, 340px) !important;
+        max-width: min(86vw, 340px) !important;
+        padding-left: 22px !important;
+        padding-right: 22px !important;
+    }
+
+    .contact-btn,
+    .cta-contact-btn,
+    .floating-contact-btn,
+    .chapter-play-btn,
+    .btn,
+    .chapters-header .season-selector {
+        width: min(86vw, 340px) !important;
+        min-width: min(86vw, 340px) !important;
+        max-width: min(86vw, 340px) !important;
+    }
+
+    .floating-performance-btn {
+        width: auto !important;
+        min-width: clamp(112px, 8vw, 146px) !important;
+        max-width: none !important;
+    }
+}
+
+/* Absolute center lock for contact CTA */
+main > section.contact-section > .content-inner.contact-inner {
+    display: grid !important;
+    justify-items: center !important;
+    align-content: center !important;
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+main > section.contact-section > .content-inner.contact-inner .contact-eyebrow,
+main > section.contact-section > .content-inner.contact-inner .contact-title,
+main > section.contact-section > .content-inner.contact-inner .contact-text {
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+main > section.contact-section > .content-inner.contact-inner .contact-text {
+    max-width: min(62ch, 90%) !important;
+}
+
+main > section.contact-section > .content-inner.contact-inner .contact-actions {
+    width: auto !important;
+    justify-content: center !important;
+    align-items: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+/* Chapter Play button: custom size + curved */
+.chapter-play-btn {
+    width: auto !important;
+    min-width: clamp(120px, 10vw, 180px) !important;
+    max-width: none !important;
+    padding-left: clamp(18px, 1.6vw, 26px) !important;
+    padding-right: clamp(18px, 1.6vw, 26px) !important;
+    border-radius: 999px !important;
+}
+
+/* Mobile solid background lock: avoid video leaks between sections */
+@media (max-width: 900px) {
+    html,
+    body {
+        background: #070707 !important;
+    }
+
+    main {
+        background: transparent !important;
+    }
+
+    main {
+        isolation: isolate;
+    }
+
+    main > section:not(.intro-overlay) {
+        position: relative;
+        z-index: 1;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        border-top: 0 !important;
+        border-bottom: 0 !important;
+        background-color: #070707 !important;
+        box-shadow: inset 0 1px 0 #070707, inset 0 -1px 0 #070707;
+        overflow: hidden;
+    }
+
+    main > section:not(.intro-overlay) + section:not(.intro-overlay) {
+        margin-top: -1px !important;
+    }
+}
+
+/* Making Of: extra air between media and text (similar rhythm to Vertice section) */
+main > section.bts-section > .content-inner.bts-inner {
+    column-gap: clamp(62px, 6.6vw, 122px) !important;
+    row-gap: clamp(24px, 2.8vw, 40px) !important;
+}
+
+@media (max-width: 900px) {
+    main > section.bts-section > .content-inner.bts-inner {
+        column-gap: clamp(22px, 6vw, 34px) !important;
+        row-gap: clamp(18px, 4.6vw, 28px) !important;
+    }
+}
+
+/* Mobile CTA image fits real device viewport size */
+@media (max-width: 900px) {
+    .contact-section,
+    .contact-inner {
+        min-height: 100dvh !important;
+    }
+
+    .contact-section::before {
+        background-size: cover !important;
+        background-position: center top !important;
+    }
+
+    /* Match "Making Of" text air with "Creado por" */
+    .bts-copy {
+        padding-top: clamp(26px, 6vw, 44px) !important;
+    }
+
+    /* Restore mobile header/hero visibility */
+    main {
+        padding-top: 100dvh !important;
+    }
+
+    .hero-video-container {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        min-height: 100dvh !important;
+    }
+
+    .hero-titulo,
+    .hero-footer-container {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+
+    nav.topnav {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+}
+
+@media (max-width: 560px) {
+    .bts-copy {
+        padding-top: clamp(22px, 7vw, 34px) !important;
+    }
 }

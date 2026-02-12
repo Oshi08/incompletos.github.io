@@ -155,7 +155,15 @@
         let introBlurTarget = 0;
         let introBlurCurrent = 0;
         let introMotionListenersAttached = false;
+        let introTouchStartX = 0;
+        let introTouchStartY = 0;
+        let introTouchMoved = false;
+        const introScrollKeys = new Set(['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' ', 'Spacebar']);
         const hasPointerMove = ('onpointermove' in window);
+        const isIntroScrollLocked = () => (
+            !introFinalized
+            && (document.body.classList.contains('intro-locked') || document.body.classList.contains('intro-revealing'))
+        );
         const parseCssTimeToMs = (value) => {
             const trimmed = String(value || '').trim();
             if (!trimmed) return 0;
@@ -240,8 +248,58 @@
             introParallaxRaf = window.requestAnimationFrame(flushIntroParallax);
         };
         const onIntroWheel = (event) => {
+            if (!isIntroScrollLocked()) return;
+            event.preventDefault();
             if (Math.abs(event.deltaY) < 1) return;
             startIntroExit();
+        };
+        const onIntroKeyDown = (event) => {
+            if (!isIntroScrollLocked()) return;
+            const key = event.key;
+            if (!introScrollKeys.has(key) && event.code !== 'Space') return;
+            event.preventDefault();
+        };
+        const onIntroTouchStart = (event) => {
+            if (introExitStarted || introFinalized) return;
+            if (!event.touches || event.touches.length === 0) return;
+            const touch = event.touches[0];
+            introTouchStartX = touch.clientX;
+            introTouchStartY = touch.clientY;
+            introTouchMoved = false;
+            introPointerX = touch.clientX;
+            introPointerY = touch.clientY;
+            introPrevPointerX = touch.clientX;
+            introPrevPointerY = touch.clientY;
+            if (lowMotionMode) return;
+            if (introParallaxRaf) return;
+            introParallaxRaf = window.requestAnimationFrame(flushIntroParallax);
+        };
+        const onIntroTouchMove = (event) => {
+            event.preventDefault();
+            if (introExitStarted || introFinalized) return;
+            if (!event.touches || event.touches.length === 0) return;
+            const touch = event.touches[0];
+            const dxFromStart = touch.clientX - introTouchStartX;
+            const dyFromStart = touch.clientY - introTouchStartY;
+            if (Math.hypot(dxFromStart, dyFromStart) > 8) {
+                introTouchMoved = true;
+            }
+            if (lowMotionMode) return;
+            const dx = touch.clientX - introPrevPointerX;
+            const dy = touch.clientY - introPrevPointerY;
+            introPrevPointerX = touch.clientX;
+            introPrevPointerY = touch.clientY;
+            kickIntroMotionBlur(Math.hypot(dx, dy));
+            introPointerX = touch.clientX;
+            introPointerY = touch.clientY;
+            if (introParallaxRaf) return;
+            introParallaxRaf = window.requestAnimationFrame(flushIntroParallax);
+        };
+        const onIntroTouchEnd = () => {
+            if (introExitStarted || introFinalized) return;
+            if (!introTouchMoved) {
+                startIntroExit();
+            }
         };
         const detachIntroMotionListeners = () => {
             if (!introMotionListenersAttached) return;
@@ -253,17 +311,28 @@
             }
             window.removeEventListener('mouseleave', resetIntroParallax);
             window.removeEventListener('wheel', onIntroWheel);
+            window.removeEventListener('keydown', onIntroKeyDown);
+            introOverlay.removeEventListener('touchstart', onIntroTouchStart);
+            introOverlay.removeEventListener('touchmove', onIntroTouchMove);
+            introOverlay.removeEventListener('touchend', onIntroTouchEnd);
+            introOverlay.removeEventListener('touchcancel', onIntroTouchEnd);
         };
         const attachIntroMotionListeners = () => {
-            if (lowMotionMode || introMotionListenersAttached) return;
+            if (introMotionListenersAttached) return;
             introMotionListenersAttached = true;
+            introOverlay.addEventListener('touchstart', onIntroTouchStart, { passive: true });
+            introOverlay.addEventListener('touchmove', onIntroTouchMove, { passive: false });
+            introOverlay.addEventListener('touchend', onIntroTouchEnd, { passive: true });
+            introOverlay.addEventListener('touchcancel', onIntroTouchEnd, { passive: true });
+            window.addEventListener('wheel', onIntroWheel, { passive: false });
+            window.addEventListener('keydown', onIntroKeyDown);
+            if (lowMotionMode) return;
             if (hasPointerMove) {
                 window.addEventListener('pointermove', onIntroPointerMove, { passive: true });
             } else {
                 window.addEventListener('mousemove', onIntroPointerMove, { passive: true });
             }
             window.addEventListener('mouseleave', resetIntroParallax, { passive: true });
-            window.addEventListener('wheel', onIntroWheel, { passive: true });
         };
         const cleanupIntroRuntime = () => {
             detachIntroMotionListeners();
@@ -291,7 +360,8 @@
             markIntroSeen();
             unlockIntro();
         };
-        const startIntroExit = () => {
+        const startIntroExit = (options = {}) => {
+            const { instant = false } = options;
             if (introExitStarted) return;
             introExitStarted = true;
             detachIntroMotionListeners();
@@ -301,6 +371,11 @@
             }
             document.body.classList.remove('intro-locked');
             document.body.classList.add('intro-revealing');
+            if (instant) {
+                introOverlay.style.display = 'none';
+                finalizeIntro();
+                return;
+            }
             requestAnimationFrame(() => {
                 introOverlay.classList.add('is-exiting');
                 if (introExitTimer) window.clearTimeout(introExitTimer);
@@ -530,6 +605,75 @@
         let charactersResizeRaf = 0;
         let charactersInViewport = true;
         let hasWindowFocus = document.hasFocus();
+        let touchSessionActive = false;
+        let touchDragEnabled = false;
+        let touchAxisLocked = false;
+        let touchHorizontal = false;
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchDragStartX = 0;
+        let touchDragStartTranslate = 0;
+        let touchCurrentTranslate = 0;
+
+        const readTrackTranslateX = () => {
+            const transform = window.getComputedStyle(charactersTrack).transform;
+            if (!transform || transform === 'none') return 0;
+            const matrix3d = transform.match(/^matrix3d\((.+)\)$/);
+            if (matrix3d) {
+                const values = matrix3d[1].split(',').map((v) => Number.parseFloat(v.trim()));
+                return Number.isFinite(values[12]) ? values[12] : 0;
+            }
+            const matrix2d = transform.match(/^matrix\((.+)\)$/);
+            if (matrix2d) {
+                const values = matrix2d[1].split(',').map((v) => Number.parseFloat(v.trim()));
+                return Number.isFinite(values[4]) ? values[4] : 0;
+            }
+            return 0;
+        };
+
+        const parseSeconds = (value) => {
+            const raw = String(value || '').split(',')[0].trim();
+            if (!raw) return 0;
+            if (raw.endsWith('ms')) return (Number.parseFloat(raw) || 0) / 1000;
+            if (raw.endsWith('s')) return Number.parseFloat(raw) || 0;
+            return Number.parseFloat(raw) || 0;
+        };
+
+        const readLoopDistance = () => {
+            const raw = window.getComputedStyle(charactersTrack).getPropertyValue('--marquee-loop-distance').trim();
+            if (!raw) return 0;
+            return Number.parseFloat(raw.replace('px', '')) || 0;
+        };
+
+        const beginTouchDrag = (clientX) => {
+            touchDragEnabled = true;
+            touchCurrentTranslate = readTrackTranslateX();
+            touchDragStartTranslate = touchCurrentTranslate;
+            touchDragStartX = clientX;
+            charactersTrack.classList.add('is-touch-dragging');
+            charactersTrack.style.animation = 'none';
+            charactersTrack.style.transform = `translateX(${touchCurrentTranslate}px)`;
+            charactersMarquee.classList.add('is-paused-runtime');
+        };
+
+        const endTouchDrag = () => {
+            if (!touchDragEnabled) return;
+            const loopDistance = readLoopDistance();
+            const durationSeconds = parseSeconds(window.getComputedStyle(charactersTrack).animationDuration);
+            const normalized = loopDistance > 0
+                ? ((((0 - touchCurrentTranslate) % loopDistance) + loopDistance) % loopDistance)
+                : 0;
+            const progress = (loopDistance > 0) ? (normalized / loopDistance) : 0;
+            const delay = (durationSeconds > 0) ? (0 - (progress * durationSeconds)) : 0;
+
+            charactersTrack.style.removeProperty('animation');
+            charactersTrack.style.removeProperty('transform');
+            charactersTrack.style.animationDelay = `${delay.toFixed(4)}s`;
+            charactersTrack.classList.remove('is-touch-dragging');
+
+            touchDragEnabled = false;
+            updateCharactersRuntimePause();
+        };
 
         const rebuildCharactersMarquee = () => {
             if (baseCharacterCards.length === 0) return;
@@ -557,6 +701,9 @@
             charactersTrack.style.setProperty('--marquee-loop-distance', `${Math.round(oneSetWidth)}px`);
             const durationSeconds = Math.max(18, Math.min(60, oneSetWidth / 58));
             charactersTrack.style.setProperty('--marquee-duration', `${durationSeconds.toFixed(2)}s`);
+            if (!touchDragEnabled) {
+                charactersTrack.style.animationDelay = '0s';
+            }
         };
 
         const updateCharactersRuntimePause = () => {
@@ -595,6 +742,45 @@
             hasWindowFocus = true;
             updateCharactersRuntimePause();
         });
+        charactersMarquee.addEventListener('touchstart', (event) => {
+            if (!event.touches || event.touches.length !== 1) return;
+            const touch = event.touches[0];
+            touchSessionActive = true;
+            touchDragEnabled = false;
+            touchAxisLocked = false;
+            touchHorizontal = false;
+            touchStartX = touch.clientX;
+            touchStartY = touch.clientY;
+        }, { passive: true });
+        charactersMarquee.addEventListener('touchmove', (event) => {
+            if (!touchSessionActive || !event.touches || event.touches.length === 0) return;
+            const touch = event.touches[0];
+            const dx = touch.clientX - touchStartX;
+            const dy = touch.clientY - touchStartY;
+
+            if (!touchAxisLocked && (Math.abs(dx) + Math.abs(dy)) > 6) {
+                touchAxisLocked = true;
+                touchHorizontal = Math.abs(dx) > Math.abs(dy);
+            }
+
+            if (!touchAxisLocked || !touchHorizontal) return;
+            if (!touchDragEnabled) {
+                beginTouchDrag(touch.clientX);
+            }
+            if (event.cancelable) event.preventDefault();
+            touchCurrentTranslate = touchDragStartTranslate + (touch.clientX - touchDragStartX);
+            charactersTrack.style.transform = `translateX(${touchCurrentTranslate}px)`;
+        }, { passive: false });
+        const onCharactersTouchEnd = () => {
+            if (touchDragEnabled) {
+                endTouchDrag();
+            }
+            touchSessionActive = false;
+            touchAxisLocked = false;
+            touchHorizontal = false;
+        };
+        charactersMarquee.addEventListener('touchend', onCharactersTouchEnd, { passive: true });
+        charactersMarquee.addEventListener('touchcancel', onCharactersTouchEnd, { passive: true });
         updateCharactersRuntimePause();
     }
 
@@ -789,19 +975,58 @@
 
     if (!strip || !viewport || cards.length === 0) return;
 
-    const CLOSED_WIDTH = 276;
-    const CARD_HEIGHT = 636;
-    const GAP = 28;
-    const DESC_WIDTH = 393;
     const CINEMA_ASPECT = 16 / 9;
-    const CINEMA_MEDIA_WIDTH = Math.round(CARD_HEIGHT * CINEMA_ASPECT);
-    const UNIFORM_OPEN_WIDTH = CINEMA_MEDIA_WIDTH + DESC_WIDTH;
     const HOVER_DELAY_MS = 520;
+    const CHAPTER_METRIC_FALLBACKS = {
+        closedWidth: 276,
+        cardHeight: 636,
+        gap: 28,
+        descWidth: 393
+    };
+
+    let CLOSED_WIDTH = CHAPTER_METRIC_FALLBACKS.closedWidth;
+    let CARD_HEIGHT = CHAPTER_METRIC_FALLBACKS.cardHeight;
+    let GAP = CHAPTER_METRIC_FALLBACKS.gap;
+    let DESC_WIDTH = CHAPTER_METRIC_FALLBACKS.descWidth;
+    let UNIFORM_OPEN_WIDTH = Math.round(CARD_HEIGHT * CINEMA_ASPECT) + DESC_WIDTH;
+
+    const readChapterMetric = (styles, varName, fallback) => {
+        const value = Number.parseFloat(styles.getPropertyValue(varName));
+        return Number.isFinite(value) && value > 0 ? value : fallback;
+    };
+
+    const refreshChapterMetrics = () => {
+        const rootStyles = window.getComputedStyle(document.documentElement);
+        CLOSED_WIDTH = readChapterMetric(rootStyles, '--chapter-closed-width', CHAPTER_METRIC_FALLBACKS.closedWidth);
+        CARD_HEIGHT = readChapterMetric(rootStyles, '--chapter-card-height', CHAPTER_METRIC_FALLBACKS.cardHeight);
+        GAP = readChapterMetric(rootStyles, '--chapter-gap', CHAPTER_METRIC_FALLBACKS.gap);
+        DESC_WIDTH = readChapterMetric(rootStyles, '--chapter-desc-width', CHAPTER_METRIC_FALLBACKS.descWidth);
+        if (!window.matchMedia('(max-width: 900px)').matches && cards.length > 0) {
+            const viewportWidth = viewport.clientWidth || window.innerWidth || 0;
+            const fitClosedWidth = Math.floor((viewportWidth - (GAP * (cards.length - 1))) / cards.length);
+            const adaptiveClosedWidth = Math.max(180, Math.min(560, fitClosedWidth));
+            if (Number.isFinite(adaptiveClosedWidth) && adaptiveClosedWidth > 0) {
+                CLOSED_WIDTH = adaptiveClosedWidth;
+                document.documentElement.style.setProperty('--chapter-closed-width', `${Math.round(adaptiveClosedWidth)}px`);
+            }
+        } else {
+            document.documentElement.style.removeProperty('--chapter-closed-width');
+        }
+        UNIFORM_OPEN_WIDTH = Math.round(CARD_HEIGHT * CINEMA_ASPECT) + DESC_WIDTH;
+    };
+
+    refreshChapterMetrics();
 
     let activeCard = null;
     const hoverTimers = new Map();
     let mobileModal = null;
     let mobileScrollTimer = null;
+    let isMouseDraggingViewport = false;
+    let viewportDragStartX = 0;
+    let viewportDragStartScrollLeft = 0;
+    let viewportDragMoved = false;
+    let suppressCardClickUntil = 0;
+    let mobileSnapTimer = null;
 
     const closeNavMenu = () => {
         if (!topnav) return;
@@ -1041,9 +1266,7 @@
         document.body.classList.remove('chapter-modal-open');
     };
 
-    const updateMobilePreviewFromViewport = () => {
-        if (!isMobileLayout() || mobileModal) return;
-
+    const getClosestCardToViewportCenter = () => {
         const viewportRect = viewport.getBoundingClientRect();
         const viewportCenter = viewportRect.left + (viewportRect.width / 2);
         let closestCard = null;
@@ -1058,6 +1281,25 @@
                 closestCard = card;
             }
         });
+
+        return closestCard;
+    };
+
+    const snapMobileViewportToClosestCard = (smooth = true) => {
+        if (!isMobileLayout() || mobileModal) return;
+        const closestCard = getClosestCardToViewportCenter();
+        if (!closestCard) return;
+        closestCard.scrollIntoView({
+            behavior: smooth ? 'smooth' : 'auto',
+            inline: 'center',
+            block: 'nearest'
+        });
+    };
+
+    const updateMobilePreviewFromViewport = () => {
+        if (!isMobileLayout() || mobileModal) return;
+
+        const closestCard = getClosestCardToViewportCenter();
 
         cards.forEach((card) => {
             if (card !== closestCard) stopPreview(card);
@@ -1343,6 +1585,11 @@
         });
 
         card.addEventListener('click', (event) => {
+            if (Date.now() < suppressCardClickUntil) {
+                event.preventDefault();
+                event.stopPropagation();
+                return;
+            }
             if (closeButton && closeButton.contains(event.target)) return;
             if (playButton && playButton.contains(event.target)) return;
 
@@ -1397,14 +1644,73 @@
 
     viewport.addEventListener('scroll', () => {
         if (!isMobileLayout()) return;
+        if (isMouseDraggingViewport) return;
         if (mobileScrollTimer) clearTimeout(mobileScrollTimer);
         mobileScrollTimer = setTimeout(updateMobilePreviewFromViewport, 90);
     }, { passive: true });
+
+    viewport.addEventListener('mousedown', (event) => {
+        if (!isMobileLayout()) return;
+        if (event.button !== 0) return;
+        if (event.target.closest('button, a, select, input, textarea, label')) return;
+
+        if (mobileSnapTimer) clearTimeout(mobileSnapTimer);
+        isMouseDraggingViewport = true;
+        viewportDragMoved = false;
+        viewportDragStartX = event.clientX;
+        viewportDragStartScrollLeft = viewport.scrollLeft;
+        viewport.classList.add('is-mouse-dragging');
+    });
+
+    window.addEventListener('mousemove', (event) => {
+        if (!isMouseDraggingViewport) return;
+        const deltaX = event.clientX - viewportDragStartX;
+        if (Math.abs(deltaX) > 3) {
+            viewportDragMoved = true;
+        }
+        viewport.scrollLeft = viewportDragStartScrollLeft - deltaX;
+        event.preventDefault();
+    });
+
+    window.addEventListener('mouseup', () => {
+        if (!isMouseDraggingViewport) return;
+        isMouseDraggingViewport = false;
+        viewport.classList.remove('is-mouse-dragging');
+        if (viewportDragMoved) {
+            suppressCardClickUntil = Date.now() + 240;
+            snapMobileViewportToClosestCard(true);
+            if (mobileScrollTimer) clearTimeout(mobileScrollTimer);
+            mobileScrollTimer = setTimeout(updateMobilePreviewFromViewport, 130);
+        }
+    });
+
+    window.addEventListener('mouseleave', () => {
+        if (!isMouseDraggingViewport) return;
+        isMouseDraggingViewport = false;
+        viewport.classList.remove('is-mouse-dragging');
+        if (viewportDragMoved) {
+            suppressCardClickUntil = Date.now() + 240;
+            snapMobileViewportToClosestCard(true);
+        }
+    });
+
+    viewport.addEventListener('wheel', (event) => {
+        if (!isMobileLayout()) return;
+        if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
+        event.preventDefault();
+        viewport.scrollLeft += event.deltaY;
+        if (mobileSnapTimer) clearTimeout(mobileSnapTimer);
+        mobileSnapTimer = setTimeout(() => {
+            snapMobileViewportToClosestCard(true);
+            updateMobilePreviewFromViewport();
+        }, 120);
+    }, { passive: false });
 
     window.addEventListener('resize', () => {
         if (!window.matchMedia('(max-width: 900px)').matches) {
             closeNavMenu();
         }
+        refreshChapterMetrics();
         if (activeCard) {
             activate(activeCard);
             return;
