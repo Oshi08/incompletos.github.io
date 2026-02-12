@@ -5,11 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>[In]completos</title>
     <link rel="stylesheet" href="styles.css">
-    
-  
 </head>
-<body>
-    <nav class="topnav">
+<body class="intro-locked">
+    <nav class="topnav" aria-label="Principal">
         <div class="nav-left"></div>
         <div class="nav-center"><div class="logo"><a href="index.html"><img src="img/Logo_Vertice.svg" alt="Imagen Logo"></a></div></div>
         <button class="nav-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav-links">
@@ -18,9 +16,9 @@
             <span></span>
         </button>
         <div class="nav-links" id="nav-links">
-            <a href="#">INICIO</a>
-            <a href="#">AULA</a>
-            <a href="#">CONÓCENOS</a>
+            <a href="#capitulos">CAPÍTULOS</a>
+            <a href="#personajes">PERSONAJES</a>
+            <a href="#contacto">CONTACTO</a>
         </div>
     </nav>
 
@@ -29,17 +27,17 @@
             <source src="img/videos/7188675_Woman_Young_Women_3840x2160.mp4" type="video/mp4">
             Tu navegador no soporta el elemento de video.
         </video>
-        <img src="img/incompletos_titulo.png" alt="Título" class="hero-titulo">
+        <img src="img/incompletos_titulo.png" alt="Título" class="hero-titulo" fetchpriority="high" decoding="async">
         <div class="hero-footer-container">
             <p class="hero-footer-text">realizado por</p>
-            <img src="img/Vertice_group.svg" alt="Vértice Group" class="hero-footer">
+            <img src="img/Vertice_group.svg" alt="Vértice Group" class="hero-footer" decoding="async">
         </div>
     </div>
 
     <main>
-        <section class="content-block">
+        <section class="content-block intro-overlay">
             <div class="content-inner">
-                <div class="stair-phrase" aria-label="La serie que no podras dejar de estudiar">
+                <div class="stair-phrase" aria-label="La serie que no podrás dejar de estudiar">
                     <p class="stair-eyebrow">SERIE ORIGINAL</p>
                     <p class="stair-line">
                         <span class="stair-word from-top">La</span>
@@ -55,19 +53,35 @@
             </div>
         </section>
 
-        <section class="chapters-section">
+        <section class="vertice-section" id="situacion">
+            <div class="content-inner vertice-inner">
+                <div class="vertice-media">
+                    <img src="img/imagen_mujer.png" alt="Vértice Group" class="vertice-image" decoding="async">
+                </div>
+                <div class="vertice-content">
+                    <p class="vertice-eyebrow">CREADO POR</p>
+                    <img src="img/Vertice_group_Learning.svg" alt="Vértice Group Learning" class="vertice-logo">
+                    <img src="img/Vertice_group.svg" alt="Vértice Group" class="vertice-logo-mobile">
+                    <p class="vertice-text">Diseñamos experiencias de aprendizaje audiovisual con ritmo narrativo, precisión pedagógica y una puesta en escena contemporánea. Cada pieza está creada para activar curiosidad, retención y acción.</p>
+                    <a href="#contacto" class="vertice-btn">HABLEMOS</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="chapters-section" id="capitulos">
             <div class="content-inner">
                 <div class="chapters-header">
                     <select class="season-selector">
                         <option value="1">PRIMERA TEMPORADA</option>
                         <option value="2">SEGUNDA TEMPORADA</option>
                     </select>
+                    <h2 class="chapters-heading">CAPÍTULOS</h2>
                 </div>
                 <div class="chapters-viewport">
                     <div class="chapters-strip">
                         <div class="chapter-card" role="button" tabindex="0" aria-expanded="false">
                             <div class="chapter-media">
-                                <img class="chapter-thumb" src="img/Captura.PNG" alt="Miniatura La tristeza">
+                                <img class="chapter-thumb" src="img/Captura.PNG" alt="Miniatura La tristeza" loading="lazy" decoding="async">
                                 <video class="chapter-video" muted playsinline preload="metadata" poster="img/Captura.PNG">
                                     <source src="img/videos/7188675_Woman_Young_Women_3840x2160.mp4" type="video/mp4">
                                     Tu navegador no soporta el elemento de video.
@@ -83,7 +97,7 @@
                         </div>
                         <div class="chapter-card" role="button" tabindex="0" aria-expanded="false">
                             <div class="chapter-media">
-                                <img class="chapter-thumb" src="img/Captura2.PNG" alt="Miniatura La alegría">
+                                <img class="chapter-thumb" src="img/Captura2.PNG" alt="Miniatura La alegría" loading="lazy" decoding="async">
                                 <video class="chapter-video" muted playsinline preload="metadata" poster="img/Captura2.PNG">
                                     <source src="img/videos/6013655_People_Men_3840x2160.mp4" type="video/mp4">
                                     Tu navegador no soporta el elemento de video.
@@ -99,7 +113,7 @@
                         </div>
                         <div class="chapter-card" role="button" tabindex="0" aria-expanded="false">
                             <div class="chapter-media">
-                                <img class="chapter-thumb" src="img/Captura.PNG" alt="Miniatura La ira">
+                                <img class="chapter-thumb" src="img/Captura.PNG" alt="Miniatura La ira" loading="lazy" decoding="async">
                                 <video class="chapter-video" muted playsinline preload="metadata" poster="img/Captura.PNG">
                                     <source src="img/videos/7188675_Woman_Young_Women_3840x2160.mp4" type="video/mp4">
                                     Tu navegador no soporta el elemento de video.
@@ -115,7 +129,7 @@
                         </div>
                         <div class="chapter-card" role="button" tabindex="0" aria-expanded="false">
                             <div class="chapter-media">
-                                <img class="chapter-thumb" src="img/Captura2.PNG" alt="Miniatura El miedo">
+                                <img class="chapter-thumb" src="img/Captura2.PNG" alt="Miniatura El miedo" loading="lazy" decoding="async">
                                 <video class="chapter-video" muted playsinline preload="metadata" poster="img/Captura2.PNG">
                                     <source src="img/videos/7188675_Woman_Young_Women_3840x2160.mp4" type="video/mp4">
                                     Tu navegador no soporta el elemento de video.
@@ -131,7 +145,7 @@
                         </div>
                         <div class="chapter-card" role="button" tabindex="0" aria-expanded="false">
                             <div class="chapter-media">
-                                <img class="chapter-thumb" src="img/Captura.PNG" alt="Miniatura El asco">
+                                <img class="chapter-thumb" src="img/Captura.PNG" alt="Miniatura El asco" loading="lazy" decoding="async">
                                 <video class="chapter-video" muted playsinline preload="metadata" poster="img/Captura.PNG">
                                     <source src="img/videos/6013655_People_Men_3840x2160.mp4" type="video/mp4">
                                     Tu navegador no soporta el elemento de video.
@@ -150,41 +164,98 @@
             </div>
         </section>
 
-        <section class="vertice-section">
-            <div class="content-inner vertice-inner">
-                <div class="vertice-media">
-                    <img src="img/imagen_mujer.png" alt="Vértice Group" class="vertice-image">
-                </div>
-                <div class="vertice-content">
-                    <p class="vertice-eyebrow">REALIZADO POR</p>
-                    <img src="img/Vertice_group_Learning.svg" alt="Vértice Group Learning" class="vertice-logo">
-                    <img src="img/Vertice_group.svg" alt="Vértice Group" class="vertice-logo-mobile">
-                    <p class="vertice-text">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
-                    <a href="#" class="vertice-btn">CONTACTANOS</a>
+        <section class="characters-section" id="personajes" aria-label="Personajes">
+            <div class="content-inner characters-inner">
+                <p class="characters-eyebrow">ACTORES QUE TE MOTIVAN</p>
+                <h2 class="characters-title">PERSONAJES</h2>
+
+                <div class="characters-marquee">
+                    <div class="characters-track">
+                        <article class="character-card">
+                            <img src="img/Captura.PNG" alt="Nora - Alba Redondo" loading="lazy" decoding="async">
+                            <div class="character-overlay">
+                                <p class="character-name">NORA</p>
+                                <p class="actor-name">ALBA REDONDO</p>
+                            </div>
+                        </article>
+                        <article class="character-card">
+                            <img src="img/Captura2.PNG" alt="Iván - Marco Vidal" loading="lazy" decoding="async">
+                            <div class="character-overlay">
+                                <p class="character-name">IVÁN</p>
+                                <p class="actor-name">MARCO VIDAL</p>
+                            </div>
+                        </article>
+                        <article class="character-card">
+                            <img src="img/imagen_mujer.png" alt="Lía - Clara Soler" loading="lazy" decoding="async">
+                            <div class="character-overlay">
+                                <p class="character-name">LÍA</p>
+                                <p class="actor-name">CLARA SOLER</p>
+                            </div>
+                        </article>
+                        <article class="character-card">
+                            <img src="img/Captura.PNG" alt="Nora - Alba Redondo" loading="lazy" decoding="async">
+                            <div class="character-overlay">
+                                <p class="character-name">NORA</p>
+                                <p class="actor-name">ALBA REDONDO</p>
+                            </div>
+                        </article>
+                        <article class="character-card">
+                            <img src="img/Captura2.PNG" alt="Iván - Marco Vidal" loading="lazy" decoding="async">
+                            <div class="character-overlay">
+                                <p class="character-name">IVÁN</p>
+                                <p class="actor-name">MARCO VIDAL</p>
+                            </div>
+                        </article>
+                        <article class="character-card">
+                            <img src="img/imagen_mujer.png" alt="Lía - Clara Soler" loading="lazy" decoding="async">
+                            <div class="character-overlay">
+                                <p class="character-name">LÍA</p>
+                                <p class="actor-name">CLARA SOLER</p>
+                            </div>
+                        </article>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <section class="bts-section">
+        <section class="bts-section" id="bts">
             <div class="content-inner bts-inner">
-                <div class="bts-slider" aria-label="Galeria behind the scenes">
-                    <img src="img/Captura.PNG" alt="Behind the scenes 1" class="bts-slide is-active">
-                    <img src="img/Captura2.PNG" alt="Behind the scenes 2" class="bts-slide">
-                    <img src="img/imagen_mujer.png" alt="Behind the scenes 3" class="bts-slide">
+                <div class="bts-slider" aria-label="Galería behind the scenes">
+                    <img src="img/Captura.PNG" alt="Behind the scenes 1" class="bts-slide is-active" loading="lazy" decoding="async">
+                    <img src="img/Captura2.PNG" alt="Behind the scenes 2" class="bts-slide" loading="lazy" decoding="async">
+                    <img src="img/imagen_mujer.png" alt="Behind the scenes 3" class="bts-slide" loading="lazy" decoding="async">
                     <button class="bts-nav prev" type="button" aria-label="Imagen anterior">&#8249;</button>
                     <button class="bts-nav next" type="button" aria-label="Imagen siguiente">&#8250;</button>
                 </div>
                 <div class="bts-copy">
-                    <p class="bts-eyebrow">BEHIND THE SCENES</p>
-                    <h2 class="bts-title">BTS</h2>
-                    <p class="bts-text">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.</p>
+                    <p class="bts-eyebrow">DIARIO DE PRODUCCIÓN</p>
+                    <h2 class="bts-title">MAKING OF</h2>
+                    <p class="bts-text">Direccion, fotografia, sonido y guion trabajan como un unico sistema. Este bloque muestra el proceso real de produccion: decisiones de luz, ritmo de montaje y recursos narrativos que convierten cada capitulo en una pieza de alto impacto.</p>
                 </div>
             </div>
         </section>
-    
-</main>
+
+        <section class="contact-section" id="contacto" aria-label="Contacto">
+            <div class="content-inner contact-inner">
+                <p class="contact-eyebrow">CONTACTO DIRECTO</p>
+                <h2 class="contact-title">Hablemos de tu proyecto</h2>
+                <p class="contact-text">Te ayudamos a transformar contenidos complejos en experiencias audiovisuales claras y memorables. Escríbenos y te proponemos un enfoque a medida.</p>
+                <div class="contact-actions">
+                    <a class="contact-btn" href="mailto:contacto@grupov.com">ESCRIBIR EMAIL</a>
+                    <a class="contact-btn contact-btn-ghost" href="tel:+34900000000">LLAMAR AHORA</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer footer-mini" aria-label="Pie de pagina">
+        <div class="content-inner footer-mini-inner">
+            <p class="footer-mini-text">© 2026 Grupo Vertice. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <button class="floating-contact-btn floating-performance-btn" type="button" aria-label="Activar modo rendimiento" aria-pressed="false" data-tooltip="Optimiza tu experiencia para reducir posibles ralentizaciones.">OPTIMIZAR</button>
 
     <script src="main.js"></script>
 </body>
 </html>
-
