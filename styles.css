@@ -5321,3 +5321,8 @@ main > section.bts-section > .content-inner.bts-inner {
         padding-top: clamp(22px, 7vw, 34px) !important;
     }
 }
+
+/* Vertice: remove top padding entirely */
+main > section.vertice-section > .content-inner.vertice-inner {
+    padding-top: 0 !important;
+}

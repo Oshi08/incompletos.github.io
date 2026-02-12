@@ -158,7 +158,12 @@
         let introTouchStartX = 0;
         let introTouchStartY = 0;
         let introTouchMoved = false;
+        let introParallaxIntensity = 1;
         const introScrollKeys = new Set(['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' ', 'Spacebar']);
+        const INTRO_TOUCH_MOVE_MIN_PX = 2;
+        const MOBILE_INTRO_PARALLAX_INTENSITY = 2.4;
+        const MOBILE_INTRO_BLUR_INTENSITY = 2.9;
+        const TABLET_TOUCH_INTENSITY = 1.6;
         const hasPointerMove = ('onpointermove' in window);
         const isIntroScrollLocked = () => (
             !introFinalized
@@ -203,8 +208,8 @@
             introBlurTarget *= 0.9;
             introBlurRaf = window.requestAnimationFrame(flushIntroMotionBlur);
         };
-        const kickIntroMotionBlur = (pointerSpeed) => {
-            const blurFromSpeed = Math.min(8.2, pointerSpeed * 0.14);
+        const kickIntroMotionBlur = (pointerSpeed, intensity = 1) => {
+            const blurFromSpeed = Math.min(10.8, pointerSpeed * 0.14 * intensity);
             introBlurTarget = Math.max(introBlurTarget, blurFromSpeed);
             if (introBlurRaf) return;
             introBlurRaf = window.requestAnimationFrame(flushIntroMotionBlur);
@@ -214,10 +219,11 @@
             const h = window.innerHeight || 1;
             const nx = (clientX / w) - 0.5;
             const ny = (clientY / h) - 0.5;
-            introOverlay.style.setProperty('--intro-bg-x', `${Math.round(nx * 30)}px`);
-            introOverlay.style.setProperty('--intro-bg-y', `${Math.round(ny * 24)}px`);
-            introOverlay.style.setProperty('--intro-text-x', `${Math.round(nx * 30)}px`);
-            introOverlay.style.setProperty('--intro-text-y', `${Math.round(ny * 22)}px`);
+            const intensity = Math.max(1, introParallaxIntensity);
+            introOverlay.style.setProperty('--intro-bg-x', `${Math.round(nx * 30 * intensity)}px`);
+            introOverlay.style.setProperty('--intro-bg-y', `${Math.round(ny * 24 * intensity)}px`);
+            introOverlay.style.setProperty('--intro-text-x', `${Math.round(nx * 30 * intensity)}px`);
+            introOverlay.style.setProperty('--intro-text-y', `${Math.round(ny * 22 * intensity)}px`);
         };
         const flushIntroParallax = () => {
             introParallaxRaf = 0;
@@ -228,6 +234,7 @@
             introOverlay.style.setProperty('--intro-bg-y', '0px');
             introOverlay.style.setProperty('--intro-text-x', '0px');
             introOverlay.style.setProperty('--intro-text-y', '0px');
+            introParallaxIntensity = 1;
             introBlurTarget = 0;
             introBlurCurrent = 0;
             setIntroMotionBlur(0);
@@ -241,6 +248,7 @@
             const dy = event.clientY - introPrevPointerY;
             introPrevPointerX = event.clientX;
             introPrevPointerY = event.clientY;
+            introParallaxIntensity = 1;
             kickIntroMotionBlur(Math.hypot(dx, dy));
             introPointerX = event.clientX;
             introPointerY = event.clientY;
@@ -270,7 +278,11 @@
             introPointerY = touch.clientY;
             introPrevPointerX = touch.clientX;
             introPrevPointerY = touch.clientY;
+            introParallaxIntensity = window.matchMedia('(max-width: 900px)').matches
+                ? MOBILE_INTRO_PARALLAX_INTENSITY
+                : TABLET_TOUCH_INTENSITY;
             if (lowMotionMode) return;
+            updateIntroParallax(touch.clientX, touch.clientY);
             if (introParallaxRaf) return;
             introParallaxRaf = window.requestAnimationFrame(flushIntroParallax);
         };
@@ -281,7 +293,7 @@
             const touch = event.touches[0];
             const dxFromStart = touch.clientX - introTouchStartX;
             const dyFromStart = touch.clientY - introTouchStartY;
-            if (Math.hypot(dxFromStart, dyFromStart) > 8) {
+            if (Math.hypot(dxFromStart, dyFromStart) > INTRO_TOUCH_MOVE_MIN_PX) {
                 introTouchMoved = true;
             }
             if (lowMotionMode) return;
@@ -289,7 +301,10 @@
             const dy = touch.clientY - introPrevPointerY;
             introPrevPointerX = touch.clientX;
             introPrevPointerY = touch.clientY;
-            kickIntroMotionBlur(Math.hypot(dx, dy));
+            const touchBlurIntensity = window.matchMedia('(max-width: 900px)').matches
+                ? MOBILE_INTRO_BLUR_INTENSITY
+                : TABLET_TOUCH_INTENSITY;
+            kickIntroMotionBlur(Math.hypot(dx, dy), touchBlurIntensity);
             introPointerX = touch.clientX;
             introPointerY = touch.clientY;
             if (introParallaxRaf) return;
