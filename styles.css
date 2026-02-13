@@ -5356,6 +5356,18 @@ main > section.vertice-section > .content-inner.vertice-inner {
     main {
         padding-top: calc(var(--app-vh, 1vh) * 100) !important;
     }
+
+    .content-block.intro-overlay .content-inner {
+        padding-top: var(--mobile-nav-height);
+    }
+
+    .content-block.intro-overlay .stair-phrase {
+        min-height: calc((var(--app-vh, 1vh) * 100) - var(--mobile-nav-height)) !important;
+    }
+
+    main > section:not(.intro-overlay) > .content-inner {
+        padding-top: calc(var(--mobile-nav-height) + 8px);
+    }
 }
 
 @media (max-width: 900px) {
