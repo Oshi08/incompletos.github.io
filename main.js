@@ -184,6 +184,7 @@
         const MOBILE_INTRO_BLUR_INTENSITY = 2.9;
         const TABLET_TOUCH_INTENSITY = 1.6;
         const hasPointerMove = ('onpointermove' in window);
+        const isMobileIntro = () => window.matchMedia('(max-width: 900px)').matches;
         const isIntroScrollLocked = () => (
             !introFinalized
             && (document.body.classList.contains('intro-locked') || document.body.classList.contains('intro-revealing'))
@@ -300,6 +301,7 @@
             introParallaxIntensity = window.matchMedia('(max-width: 900px)').matches
                 ? MOBILE_INTRO_PARALLAX_INTENSITY
                 : TABLET_TOUCH_INTENSITY;
+            if (isMobileIntro()) return;
             if (lowMotionMode) return;
             updateIntroParallax(touch.clientX, touch.clientY);
             if (introParallaxRaf) return;
@@ -315,6 +317,7 @@
             if (Math.hypot(dxFromStart, dyFromStart) > INTRO_TOUCH_MOVE_MIN_PX) {
                 introTouchMoved = true;
             }
+            if (isMobileIntro()) return;
             if (lowMotionMode) return;
             const dx = touch.clientX - introPrevPointerX;
             const dy = touch.clientY - introPrevPointerY;
@@ -1096,6 +1099,14 @@
         });
     }
 
+    // =========================================================
+    // ASSETS CAPITULOS (zona facil de editar)
+    // - Cambiar miniaturas y videos: edita "poster" y "src".
+    // - Añadir temporada nueva:
+    //   1) Copia un bloque como el de la temporada 2.
+    //   2) Cambia el numero (3, 4, 5...).
+    //   3) Asegurate de crear el <option> en index.html.
+    // =========================================================
     const seasons = {
         1: [
             {
@@ -1300,8 +1311,23 @@
         cards.forEach((card) => stopPreview(card));
     };
 
-    const closeMobileModal = () => {
+    const closeMobileModal = (animate = true) => {
         if (!mobileModal) return;
+        if (animate && !systemPrefersReducedMotion) {
+            if (mobileModal.classList.contains('is-exiting')) return;
+            mobileModal.classList.remove('is-active');
+            mobileModal.classList.add('is-exiting');
+            window.setTimeout(() => {
+                if (!mobileModal) return;
+                exitFullscreenSafe();
+                const videos = mobileModal.querySelectorAll('video');
+                videos.forEach((video) => resetVideo(video, false));
+                mobileModal.remove();
+                mobileModal = null;
+                document.body.classList.remove('chapter-modal-open');
+            }, 260);
+            return;
+        }
         exitFullscreenSafe();
         const videos = mobileModal.querySelectorAll('video');
         videos.forEach((video) => resetVideo(video, false));
@@ -1398,6 +1424,11 @@
         document.body.appendChild(modal);
         document.body.classList.add('chapter-modal-open');
         mobileModal = modal;
+        if (!systemPrefersReducedMotion) {
+            window.requestAnimationFrame(() => {
+                if (mobileModal) mobileModal.classList.add('is-active');
+            });
+        }
     };
 
     const getActiveShiftForLayout = (activeIndex, expandedWidth) => {

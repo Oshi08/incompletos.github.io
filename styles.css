@@ -412,6 +412,10 @@ body.intro-unlocked main > section {
     margin-bottom: 24px;
 }
 
+.intro-touch-hint {
+    display: none;
+}
+
 .content-block.intro-overlay.is-exiting {
     transform: translateY(100%);
     pointer-events: none;
@@ -1865,6 +1869,46 @@ html {
     align-items: center;
     justify-content: center;
     padding: max(12px, env(safe-area-inset-top)) 12px calc(14px + env(safe-area-inset-bottom));
+}
+
+@media (max-width: 900px) {
+    .chapter-modal {
+        opacity: 0;
+        backdrop-filter: blur(0px);
+        -webkit-backdrop-filter: blur(0px);
+        transition: opacity 0.26s ease, backdrop-filter 0.26s ease;
+    }
+
+    .chapter-modal.is-active {
+        opacity: 1;
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+    }
+
+    .chapter-modal.is-exiting {
+        opacity: 0;
+        backdrop-filter: blur(0px);
+        -webkit-backdrop-filter: blur(0px);
+    }
+
+    .chapter-modal .chapter-card {
+        opacity: 0;
+        transform: translateY(8px);
+        filter: blur(5px);
+        transition: transform 0.26s ease, filter 0.26s ease, opacity 0.26s ease;
+    }
+
+    .chapter-modal.is-active .chapter-card {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0px);
+    }
+
+    .chapter-modal.is-exiting .chapter-card {
+        opacity: 0;
+        transform: translateY(6px);
+        filter: blur(5px);
+    }
 }
 
 .chapter-modal .chapter-card {
@@ -4449,6 +4493,60 @@ nav.topnav {
         width: min(100%, 96vw) !important;
         padding-left: clamp(14px, 4.8vw, 26px) !important;
         padding-right: clamp(14px, 4.8vw, 26px) !important;
+        animation: introTextBlur 2.8s ease-in-out infinite;
+    }
+
+    .intro-touch-hint {
+        display: inline-flex;
+        position: absolute;
+        left: 50%;
+        bottom: max(92px, env(safe-area-inset-bottom));
+        transform: translateX(-50%);
+        margin: 0;
+        padding: 9px 14px;
+        border: 1px solid rgba(255, 255, 255, 0.34);
+        border-radius: 999px;
+        background: rgba(9, 9, 9, 0.48);
+        color: rgba(255, 255, 255, 0.9);
+        font-size: clamp(9px, 2.6vw, 11px);
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        text-align: center;
+        pointer-events: none;
+        z-index: 3;
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+        animation: introTouchHintPulse 1.8s ease-in-out infinite;
+    }
+}
+
+@keyframes introTouchHintPulse {
+    0%,
+    100% {
+        opacity: 0.75;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+@keyframes introTextBlur {
+    0%,
+    100% {
+        filter: drop-shadow(0 14px 36px rgba(0, 0, 0, 0.36)) blur(0px);
+    }
+    50% {
+        filter: drop-shadow(0 14px 36px rgba(0, 0, 0, 0.36)) blur(0.6px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .intro-touch-hint {
+        animation: none;
+    }
+
+    .content-block.intro-overlay .stair-phrase {
+        animation: none;
     }
 }
 
@@ -4458,6 +4556,12 @@ nav.topnav {
     min-width: clamp(112px, 8vw, 146px) !important;
     padding: 0 clamp(10px, 1vw, 14px) !important;
     font-size: clamp(10px, 0.64vw, 11px) !important;
+}
+
+@media (max-width: 900px) {
+    .floating-performance-btn {
+        display: none !important;
+    }
 }
 
 @media (min-width: 1600px) {

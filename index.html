@@ -22,8 +22,11 @@
         </div>
     </nav>
 
+    <!-- ============================= -->
+    <!-- ASSETS HERO: video + titulo   -->
+    <!-- ============================= -->
     <div class="hero-video-container">
-        <video autoplay muted loop playsinline>
+        <video autoplay muted loop playsinline aria-hidden="true">
             <source src="img/videos/7188675_Woman_Young_Women_3840x2160.mp4" type="video/mp4">
             Tu navegador no soporta el elemento de video.
         </video>
@@ -50,9 +53,13 @@
                         <span class="stair-word from-bottom">estudiar</span>
                     </p>
                 </div>
+                <p class="intro-touch-hint" aria-hidden="true">Pulsa la pantalla para quitar esta seccion</p>
             </div>
         </section>
 
+        <!-- ============================= -->
+        <!-- ASSETS VERTICE: imagen/logo   -->
+        <!-- ============================= -->
         <section class="vertice-section" id="situacion">
             <div class="content-inner vertice-inner">
                 <div class="vertice-media">
@@ -68,12 +75,22 @@
             </div>
         </section>
 
+        <!-- ========================================================= -->
+        <!-- CAPITULOS (FACIL)                                         -->
+        <!-- 1) Cambiar miniaturas y videos:                           -->
+        <!--    Abre main.js y busca el bloque "ASSETS CAPITULOS".      -->
+        <!-- 2) Añadir otra temporada:                                 -->
+        <!--    - Duplica un <option> aqui abajo y ponle el número.     -->
+        <!--    - En main.js añade una nueva temporada con ese numero.  -->
+        <!-- El HTML es solo de arranque, lo real se cambia en main.js. -->
+        <!-- ========================================================= -->
         <section class="chapters-section" id="capitulos">
             <div class="content-inner">
                 <div class="chapters-header">
                     <select class="season-selector">
                         <option value="1">PRIMERA TEMPORADA</option>
                         <option value="2">SEGUNDA TEMPORADA</option>
+                        <!-- EJEMPLO: <option value="3">TERCERA TEMPORADA</option> -->
                     </select>
                     <h2 class="chapters-heading">CAPÍTULOS</h2>
                 </div>
@@ -164,6 +181,9 @@
             </div>
         </section>
 
+        <!-- ========================================= -->
+        <!-- ASSETS PERSONAJES: imagenes de actores    -->
+        <!-- ========================================= -->
         <section class="characters-section" id="personajes" aria-label="Personajes">
             <div class="content-inner characters-inner">
                 <p class="characters-eyebrow">ACTORES QUE TE MOTIVAN</p>
@@ -218,6 +238,9 @@
             </div>
         </section>
 
+        <!-- ========================================= -->
+        <!-- ASSETS BTS: imagenes del making of        -->
+        <!-- ========================================= -->
         <section class="bts-section" id="bts">
             <div class="content-inner bts-inner">
                 <div class="bts-slider" aria-label="Galería behind the scenes">
